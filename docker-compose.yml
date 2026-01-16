@@ -1,0 +1,31 @@
+services:
+  postgres-patient:
+    image: postgres:16-alpine
+    container_name: sh-postgres-patient
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: patient_db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_patient_data:/var/lib/postgresql/data
+
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: sh-rabbitmq
+    ports:
+      - "5672:5672"   # AMQP
+      - "15672:15672" # UI Management
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  redis:
+    image: redis:7.2-alpine
+    container_name: sh-redis
+    ports:
+      - "6379:6379"
+
+volumes:
+  postgres_patient_data:

@@ -1,0 +1,12 @@
+server:
+  port: 8086
+
+spring:
+  application:
+    name: analytics-service
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, prometheus

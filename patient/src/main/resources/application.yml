@@ -1,0 +1,28 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: patient-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/patient_db
+    username: user
+    password: password
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, prometheus
