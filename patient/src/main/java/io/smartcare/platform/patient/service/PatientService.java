@@ -4,6 +4,7 @@ import io.smartcare.platform.patient.domain.Patient;
 import io.smartcare.platform.patient.repository.PatientRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import io.smartcare.platform.patient.config.RabbitMQConfig;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +28,7 @@ public class PatientService {
         Patient savedPatient = patientRepository.save(patient);
         log.info("Patient saved with ID: {}", savedPatient.getId());
         
-        rabbitTemplate.convertAndSend("patient.created", "Patient created with ID: " + savedPatient.getId());
+        rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE, RabbitMQConfig.ROUTING_KEY_PATIENT_CREATED, "Patient created with ID: " + savedPatient.getId());
         
         return savedPatient;
     }

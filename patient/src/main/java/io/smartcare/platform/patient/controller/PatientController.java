@@ -2,6 +2,7 @@ package io.smartcare.platform.patient.controller;
 
 import io.smartcare.platform.patient.domain.Patient;
 import io.smartcare.platform.patient.dto.CreatePatientRequest;
+import io.smartcare.platform.patient.repository.PatientRepository;
 import io.smartcare.platform.patient.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class PatientController {
 
     private final PatientService patientService;
+    private final PatientRepository patientRepository;
 
     @PostMapping
     public ResponseEntity<Patient> createPatient(@RequestBody CreatePatientRequest request) {
@@ -26,5 +28,10 @@ public class PatientController {
 
         Patient savedPatient = patientService.registerPatient(patient);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedPatient);
+    }
+
+    @GetMapping("/{id}/exists")
+    public boolean exists(@PathVariable Long id) {
+        return patientRepository.existsById(id);
     }
 }
