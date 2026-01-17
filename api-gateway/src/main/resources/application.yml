@@ -6,20 +6,9 @@ spring:
     name: api-gateway
   security:
     oauth2:
-      client:
-        registration:
-          keycloak:
-            client-id: api-gateway
-            client-secret: Ysg9frla1hvlmX3LnnPOEoRgiBlLsJEY
-            scope: openid, profile, email
-            authorization-grant-type: authorization_code
-            redirect-uri: "{baseUrl}/login/oauth2/code/keycloak"
-        provider:
-          keycloak:
-            issuer-uri: ${AUTH_SERVER_URL:http://localhost:8180}/realms/smarthealth
       resourceserver:
         jwt:
-          issuer-uri: ${AUTH_SERVER_URL:http://localhost:8180}/realms/smarthealth
+          issuer-uri: http://localhost:8180/realms/smarthealth
   cloud:
     gateway:
       globalcors:

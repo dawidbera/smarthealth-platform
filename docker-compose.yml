@@ -201,7 +201,7 @@ services:
   analytics-service:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: analytics/Dockerfile
       args:
         JAR_FILE: analytics/target/*.jar
     container_name: sh-analytics
