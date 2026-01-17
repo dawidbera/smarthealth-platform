@@ -11,3 +11,19 @@ body {
   color: white !important;
   opacity: 1 !important;
 }
+
+.navbar .text-white {
+  opacity: 1 !important;
+  color: white !important;
+}
+
+.btn-outline-light {
+  border-color: white !important;
+  color: white !important;
+  opacity: 1 !important;
+}
+
+.btn-outline-light:hover {
+  background-color: white !important;
+  color: var(--bs-primary) !important;
+}
