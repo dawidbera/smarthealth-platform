@@ -1,7 +1,7 @@
 # SmartHealth Platform — Event‑Driven Microservices
 
 ## Architecture Overview
-The platform consists of 7 microservices communicating via asynchronous events (RabbitMQ) and synchronous REST calls (WebClient). Security is handled by Keycloak (OIDC).
+The platform consists of 7 microservices communicating via asynchronous events (RabbitMQ) and synchronous REST calls (WebClient). Security is handled by Keycloak (OIDC). Monitoring is provided by Prometheus and Grafana.
 
 ```mermaid
 flowchart TD
@@ -23,6 +23,9 @@ flowchart TD
   MQ --> BILL
   MQ --> ANL
   MQ --> NOTIF[Notification Service]
+  
+  PAT & APP & BILL & DEV & ANL & GW --> PROM[(Prometheus)]
+  PROM --> GRAF[Grafana]
 ```
 
 ## Quick Start
@@ -43,13 +46,15 @@ docker compose up --build -d
 
 ### 3. Access
 * **API Gateway**: http://localhost:8080 (secured via OIDC)
-* **Keycloak**: http://localhost:8180 (Admin: admin/admin)
+* **Keycloak**: http://localhost:8180 (Admin: admin/admin, Realm: smarthealth)
+* **Grafana**: http://localhost:3000 (Admin: admin/admin)
+* **Prometheus**: http://localhost:9090
 * **RabbitMQ UI**: http://localhost:15672 (guest/guest)
 
 ## Infrastructure Details
-* **Database**: Consolidated PostgreSQL instance (Port 5432).
-* **Caching**: Redis (Port 6379).
-* **Memory Management**: Each service is limited to **256MB RAM** to ensure stability on developer machines.
+* **Observability**: Each service exports metrics to Prometheus via Spring Boot Actuator. Grafana is pre-configured to visualize JVM state.
+* **Security**: Automatic OIDC realm import for Keycloak on startup.
+* **Memory Management**: Services are limited to **256MB-512MB RAM** to ensure stability on developer machines.
 
 ## Services & Ports
 * `api-gateway`: 8080
