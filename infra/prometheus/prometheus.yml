@@ -1,0 +1,15 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'smarthealth-services'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets:
+          - 'sh-gateway:8080'
+          - 'sh-patient:8081'
+          - 'sh-appointment:8082'
+          - 'sh-billing:8083'
+          - 'sh-notification:8084'
+          - 'sh-device:8085'
+          - 'sh-analytics:8086'
