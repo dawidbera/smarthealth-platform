@@ -1,0 +1,57 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2><i class="bi bi-receipt me-2"></i>Invoices & Billing</h2>
+  <button class="btn btn-outline-primary btn-sm" (click)="loadInvoices()">
+    <i class="bi bi-arrow-clockwise me-1"></i> Refresh
+  </button>
+</div>
+
+@if (loading) {
+<div class="text-center py-5">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
+}
+
+@if (!loading && error) {
+<div class="alert alert-danger">{{ error }}</div>
+}
+
+@if (!loading && !error) {
+<div class="card shadow-sm">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Invoice ID</th>
+            <th>Appointment ID</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (invoice of invoices; track invoice.id) {
+          <tr>
+            <td>#{{ invoice.id }}</td>
+            <td>{{ invoice.appointmentId }}</td>
+            <td><strong>{{ invoice.amount | currency:'USD' }}</strong></td>
+            <td>
+              <span class="badge" [ngClass]="invoice.status === 'PENDING' ? 'bg-warning text-dark' : 'bg-success'">
+                {{ invoice.status }}
+              </span>
+            </td>
+            <td>{{ invoice.createdAt | date:'medium' }}</td>
+          </tr>
+          } @empty {
+          <tr>
+            <td colspan="5" class="text-center py-4 text-muted">No invoices generated yet.</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+}

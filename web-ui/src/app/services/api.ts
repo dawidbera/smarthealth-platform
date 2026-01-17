@@ -18,6 +18,14 @@ export interface Appointment {
   status?: string;
 }
 
+export interface Invoice {
+  id?: number;
+  appointmentId: number;
+  amount: number;
+  status: string;
+  createdAt: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -40,5 +48,9 @@ export class ApiService {
 
   bookAppointment(appointment: Appointment): Observable<Appointment> {
     return this.http.post<Appointment>(`${this.baseUrl}/appointment`, appointment);
+  }
+
+  getInvoices(): Observable<Invoice[]> {
+    return this.http.get<Invoice[]>(`${this.baseUrl}/billing/invoices`);
   }
 }
