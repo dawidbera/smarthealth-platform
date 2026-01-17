@@ -16,6 +16,7 @@ public class SecurityConfig {
         http
             .authorizeExchange(exchanges -> exchanges
                 .pathMatchers("/actuator/**").permitAll()
+                .pathMatchers("/patient/**", "/appointment/**").permitAll()
                 .anyExchange().authenticated()
             )
             .oauth2Login(Customizer.withDefaults())
