@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService, Patient } from '../../services/api';
 
 @Component({
   selector: 'app-patients',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './patients.html',
   styleUrl: './patients.scss'
 })
@@ -13,8 +14,18 @@ export class Patients implements OnInit {
   patients: Patient[] = [];
   loading = true;
   error = '';
+  patientForm: FormGroup;
+  showModal = false;
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService, private fb: FormBuilder) {
+    this.patientForm = this.fb.group({
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      phoneNumber: ['', Validators.required],
+      dateOfBirth: ['', Validators.required]
+    });
+  }
 
   ngOnInit(): void {
     this.loadPatients();
@@ -33,5 +44,26 @@ export class Patients implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  onSubmit(): void {
+    if (this.patientForm.valid) {
+      const newPatient: Patient = this.patientForm.value;
+      this.apiService.createPatient(newPatient).subscribe({
+        next: () => {
+          this.loadPatients();
+          this.patientForm.reset();
+          this.showModal = false;
+        },
+        error: (err) => {
+          console.error('Error creating patient', err);
+          alert('Failed to add patient. Check console for details.');
+        }
+      });
+    }
+  }
+
+  toggleModal(): void {
+    this.showModal = !this.showModal;
   }
 }

@@ -1,8 +1,50 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
   <h2><i class="bi bi-people me-2"></i>Patients Management</h2>
-  <button class="btn btn-primary btn-sm">
+  <button class="btn btn-primary btn-sm" (click)="toggleModal()">
     <i class="bi bi-person-plus me-1"></i> Add Patient
   </button>
+</div>
+
+<!-- Modal Form -->
+<div class="modal fade show" [class.d-block]="showModal" tabindex="-1" *ngIf="showModal" style="background: rgba(0,0,0,0.5)">
+  <div class="modal-dialog">
+    <div class="modal-content shadow-lg">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Register New Patient</h5>
+        <button type="button" class="btn-close btn-close-white" (click)="toggleModal()"></button>
+      </div>
+      <form [formGroup]="patientForm" (ngSubmit)="onSubmit()">
+        <div class="modal-body">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">First Name</label>
+              <input type="text" class="form-control" formControlName="firstName" [class.is-invalid]="patientForm.get('firstName')?.invalid && patientForm.get('firstName')?.touched">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Last Name</label>
+              <input type="text" class="form-control" formControlName="lastName" [class.is-invalid]="patientForm.get('lastName')?.invalid && patientForm.get('lastName')?.touched">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Email Address</label>
+              <input type="email" class="form-control" formControlName="email" [class.is-invalid]="patientForm.get('email')?.invalid && patientForm.get('email')?.touched">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Phone Number</label>
+              <input type="text" class="form-control" formControlName="phoneNumber" placeholder="+48..." formControlName="phoneNumber">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Date of Birth</label>
+              <input type="date" class="form-control" formControlName="dateOfBirth">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="toggleModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" [disabled]="patientForm.invalid">Save Patient</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
 
 <div *ngIf="loading" class="text-center py-5">
