@@ -22,6 +22,17 @@ spring:
           issuer-uri: ${AUTH_SERVER_URL:http://localhost:8180}/realms/smarthealth
   cloud:
     gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:4200"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
       routes:
         - id: patient-service
           uri: ${PATIENT_SERVICE_URL:http://localhost:8081}

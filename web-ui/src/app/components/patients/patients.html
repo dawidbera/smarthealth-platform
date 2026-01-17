@@ -1,1 +1,53 @@
-<p>patients works!</p>
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2><i class="bi bi-people me-2"></i>Patients Management</h2>
+  <button class="btn btn-primary btn-sm">
+    <i class="bi bi-person-plus me-1"></i> Add Patient
+  </button>
+</div>
+
+<div *ngIf="loading" class="text-center py-5">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+  <p class="mt-2 text-muted">Fetching patients data...</p>
+</div>
+
+<div *ngIf="error" class="alert alert-danger shadow-sm">
+  <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ error }}
+  <button class="btn btn-outline-danger btn-sm ms-3" (click)="loadPatients()">Retry</button>
+</div>
+
+<div *ngIf="!loading && !error" class="card shadow-sm">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Date of Birth</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let patient of patients">
+            <td><strong>{{ patient.firstName }} {{ patient.lastName }}</strong></td>
+            <td>{{ patient.email }}</td>
+            <td>{{ patient.phoneNumber }}</td>
+            <td>{{ patient.dateOfBirth }}</td>
+            <td class="text-end">
+              <button class="btn btn-outline-secondary btn-sm me-1"><i class="bi bi-pencil"></i></button>
+              <button class="btn btn-outline-danger btn-sm"><i class="bi bi-trash"></i></button>
+            </td>
+          </tr>
+          <tr *ngIf="patients.length === 0">
+            <td colspan="5" class="text-center py-4 text-muted">
+              No patients found in the system.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
