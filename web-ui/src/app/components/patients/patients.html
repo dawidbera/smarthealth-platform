@@ -51,9 +51,24 @@
   <div class="spinner-border text-primary" role="status">
     <span class="visually-hidden">Loading...</span>
   </div>
+  <p class="mt-2 text-muted">Fetching data...</p>
 </div>
 
-<div *ngIf="!loading" class="card shadow-sm">
+<div *ngIf="!loading && error" class="alert alert-warning shadow-sm border-start border-4 border-warning">
+  <div class="d-flex align-items-center">
+    <i class="bi bi-exclamation-triangle-fill fs-4 me-3 text-warning"></i>
+    <div>
+      <strong>Intermittent Connection:</strong> {{ error }}
+      <div class="mt-2">
+        <button class="btn btn-warning btn-sm" (click)="loadPatients()">
+          <i class="bi bi-arrow-clockwise me-1"></i> Try Again
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!loading && !error" class="card shadow-sm">
   <div class="card-body p-0">
     <div class="table-responsive">
       <table class="table table-hover mb-0">

@@ -32,6 +32,7 @@ export class Patients implements OnInit {
 
   loadPatients(): void {
     this.loading = true;
+    this.error = '';
     this.apiService.getPatients().subscribe({
       next: (data) => {
         this.patients = data;
