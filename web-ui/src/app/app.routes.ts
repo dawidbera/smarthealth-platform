@@ -4,9 +4,9 @@ import { Patients } from './components/patients/patients';
 import { Appointments } from './components/appointments/appointments';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: 'dashboard', component: Dashboard },
   { path: 'patients', component: Patients },
   { path: 'appointments', component: Appointments },
-  { path: '**', redirectTo: 'dashboard' }
+  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
+  { path: '**', redirectTo: '/dashboard' }
 ];
