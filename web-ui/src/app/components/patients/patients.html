@@ -30,7 +30,11 @@
             </div>
             <div class="col-12">
               <label class="form-label">ID Number (e.g. Passport, SSN)</label>
-              <input type="text" class="form-control" formControlName="nationalId" placeholder="Identification number">
+              <input type="text" class="form-control" formControlName="nationalId" placeholder="Identification number" 
+                     [class.is-invalid]="patientForm.get('nationalId')?.invalid && patientForm.get('nationalId')?.touched">
+              <div class="invalid-feedback">
+                ID Number is required.
+              </div>
             </div>
           </div>
         </div>
