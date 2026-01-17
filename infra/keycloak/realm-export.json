@@ -1,0 +1,16 @@
+{
+  "realm": "smarthealth",
+  "enabled": true,
+  "clients": [
+    {
+      "clientId": "api-gateway",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "Ysg9frla1hvlmX3LnnPOEoRgiBlLsJEY",
+      "redirectUris": ["*"],
+      "webOrigins": ["*"],
+      "publicClient": false,
+      "protocol": "openid-connect"
+    }
+  ]
+}
