@@ -16,31 +16,31 @@ spring:
             redirect-uri: "{baseUrl}/login/oauth2/code/keycloak"
         provider:
           keycloak:
-            issuer-uri: http://localhost:8180/realms/smarthealth
+            issuer-uri: ${AUTH_SERVER_URL:http://localhost:8180}/realms/smarthealth
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8180/realms/smarthealth
+          issuer-uri: ${AUTH_SERVER_URL:http://localhost:8180}/realms/smarthealth
   cloud:
     gateway:
       routes:
         - id: patient-service
-          uri: http://localhost:8081
+          uri: ${PATIENT_SERVICE_URL:http://localhost:8081}
           predicates:
             - Path=/patient/**
         - id: appointment-service
-          uri: http://localhost:8082
+          uri: ${APPOINTMENT_SERVICE_URL:http://localhost:8082}
           predicates:
             - Path=/appointment/**
         - id: billing-service
-          uri: http://localhost:8083
+          uri: ${BILLING_SERVICE_URL:http://localhost:8083}
           predicates:
             - Path=/billing/**
         - id: device-service
-          uri: http://127.0.0.1:8085
+          uri: ${DEVICE_SERVICE_URL:http://localhost:8085}
           predicates:
             - Path=/device/**
         - id: analytics-service
-          uri: http://127.0.0.1:8086
+          uri: ${ANALYTICS_SERVICE_URL:http://localhost:8086}
           predicates:
             - Path=/analytics/**
 

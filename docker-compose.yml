@@ -1,31 +1,161 @@
 services:
-  postgres-patient:
+  postgres:
     image: postgres:16-alpine
-    container_name: sh-postgres-patient
+    container_name: sh-postgres
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: patient_db
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
     volumes:
-      - postgres_patient_data:/var/lib/postgresql/data
+      - ./init-postgres.sql:/docker-entrypoint-initdb.d/init-postgres.sql
+      - postgres_data:/var/lib/postgresql/data
+    deploy:
+      resources:
+        limits:
+          memory: 300M
 
   rabbitmq:
     image: rabbitmq:3.13-management-alpine
     container_name: sh-rabbitmq
     ports:
-      - "5672:5672"   # AMQP
-      - "15672:15672" # UI Management
-    environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
+      - "5672:5672"
+      - "15672:15672"
+    deploy:
+      resources:
+        limits:
+          memory: 400M
 
   redis:
     image: redis:7.2-alpine
     container_name: sh-redis
     ports:
       - "6379:6379"
+    deploy:
+      resources:
+        limits:
+          memory: 100M
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.0
+    container_name: sh-keycloak
+    command: start-dev
+    ports:
+      - "8180:8080"
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    deploy:
+      resources:
+        limits:
+          memory: 700M
+
+  # Aplikacje
+  api-gateway:
+    build:
+      context: .
+      args:
+        JAR_FILE: api-gateway/target/*.jar
+    container_name: sh-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - keycloak
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+  patient-service:
+    build:
+      context: .
+      args:
+        JAR_FILE: patient/target/*.jar
+    container_name: sh-patient
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgres
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+  appointment-service:
+    build:
+      context: .
+      args:
+        JAR_FILE: appointment/target/*.jar
+    container_name: sh-appointment
+    ports:
+      - "8082:8082"
+    depends_on:
+      - postgres
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+  billing-service:
+    build:
+      context: .
+      args:
+        JAR_FILE: billing/target/*.jar
+    container_name: sh-billing
+    ports:
+      - "8083:8083"
+    depends_on:
+      - postgres
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+  notification-service:
+    build:
+      context: .
+      args:
+        JAR_FILE: notification/target/*.jar
+    container_name: sh-notification
+    ports:
+      - "8084:8084"
+    depends_on:
+      - rabbitmq
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+  device-service:
+    build:
+      context: .
+      args:
+        JAR_FILE: device/target/*.jar
+    container_name: sh-device
+    ports:
+      - "8085:8085"
+    depends_on:
+      - redis
+      - postgres
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+  analytics-service:
+    build:
+      context: .
+      args:
+        JAR_FILE: analytics/target/*.jar
+    container_name: sh-analytics
+    ports:
+      - "8086:8086"
+    depends_on:
+      - postgres
+    deploy:
+      resources:
+        limits:
+          memory: 256M
 
 volumes:
-  postgres_patient_data:
+  postgres_data:

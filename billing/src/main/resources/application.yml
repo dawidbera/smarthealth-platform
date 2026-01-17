@@ -5,7 +5,7 @@ spring:
   application:
     name: billing-service
   datasource:
-    url: jdbc:postgresql://localhost:5434/billing_db
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5434}/billing_db
     username: user
     password: password
     driver-class-name: org.postgresql.Driver
@@ -14,7 +14,7 @@ spring:
       ddl-auto: update
     show-sql: true
   rabbitmq:
-    host: localhost
+    host: ${MQ_HOST:localhost}
     port: 5672
     username: guest
     password: guest
