@@ -6,7 +6,8 @@
 </div>
 
 <!-- Modal Form -->
-<div class="modal fade show" [class.d-block]="showModal" tabindex="-1" *ngIf="showModal" style="background: rgba(0,0,0,0.5)">
+@if (showModal) {
+<div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5)">
   <div class="modal-dialog">
     <div class="modal-content shadow-lg">
       <div class="modal-header bg-primary text-white">
@@ -46,15 +47,19 @@
     </div>
   </div>
 </div>
+}
 
-<div *ngIf="loading" class="text-center py-5">
+@if (loading) {
+<div class="text-center py-5">
   <div class="spinner-border text-primary" role="status">
     <span class="visually-hidden">Loading...</span>
   </div>
   <p class="mt-2 text-muted">Fetching data...</p>
 </div>
+}
 
-<div *ngIf="!loading && error" class="alert alert-warning shadow-sm border-start border-4 border-warning">
+@if (!loading && error) {
+<div class="alert alert-warning shadow-sm border-start border-4 border-warning">
   <div class="d-flex align-items-center">
     <i class="bi bi-exclamation-triangle-fill fs-4 me-3 text-warning"></i>
     <div>
@@ -67,8 +72,10 @@
     </div>
   </div>
 </div>
+}
 
-<div *ngIf="!loading && !error" class="card shadow-sm">
+@if (!loading && !error) {
+<div class="card shadow-sm">
   <div class="card-body p-0">
     <div class="table-responsive">
       <table class="table table-hover mb-0">
@@ -81,7 +88,8 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let patient of patients">
+          @for (patient of patients; track patient.id) {
+          <tr>
             <td><strong>{{ patient.firstName }} {{ patient.lastName }}</strong></td>
             <td>{{ patient.email }}</td>
             <td>{{ patient.nationalId }}</td>
@@ -90,11 +98,14 @@
               <button class="btn btn-outline-danger btn-sm"><i class="bi bi-trash"></i></button>
             </td>
           </tr>
-          <tr *ngIf="patients.length === 0">
+          } @empty {
+          <tr>
             <td colspan="4" class="text-center py-4 text-muted">No patients found.</td>
           </tr>
+          }
         </tbody>
       </table>
     </div>
   </div>
 </div>
+}

@@ -31,10 +31,12 @@ export class Patients implements OnInit {
   }
 
   loadPatients(): void {
+    console.log('Fetching patients from API...');
     this.loading = true;
     this.error = '';
     this.apiService.getPatients().subscribe({
       next: (data) => {
+        console.log('Patients data received:', data);
         this.patients = data;
         this.loading = false;
       },
