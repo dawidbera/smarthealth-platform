@@ -31,3 +31,6 @@ All databases are hosted on the `sh-postgres` instance:
 
 ## Security (OIDC)
 Keycloak automatically imports the `smarthealth` realm from `infra/keycloak/realm-export.json` on startup.
+
+## Testing & Simulation
+- **Telemetry Simulator**: Use `./infra/simulator.sh` to send mock data to the `device-service` via the API Gateway. This is required to populate Redis and see data on the Dashboard.

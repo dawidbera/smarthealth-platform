@@ -21,10 +21,9 @@ public class SecurityConfig {
         http
             .authorizeExchange(exchanges -> exchanges
                 .pathMatchers("/actuator/**").permitAll()
-                .pathMatchers("/patient/**", "/appointment/**", "/billing/**").permitAll()
+                .pathMatchers("/patient/**", "/appointment/**", "/billing/**", "/device/**").permitAll()
                 .anyExchange().authenticated()
             )
-            .oauth2Login(Customizer.withDefaults())
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
             .csrf(ServerHttpSecurity.CsrfSpec::disable);
         return http.build();

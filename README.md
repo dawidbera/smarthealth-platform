@@ -51,6 +51,13 @@ docker compose up --build -d
 * **Prometheus**: http://localhost:9090
 * **RabbitMQ UI**: http://localhost:15672 (guest/guest)
 
+## Testing Telemetry
+To simulate heart rate monitor data, run the following script in a separate terminal:
+```bash
+./infra/simulator.sh
+```
+The Dashboard will automatically pick up the data and update its status from "Waiting for sensor..." to "Online".
+
 ## Infrastructure Details
 * **Observability**: Each service exports metrics to Prometheus via Spring Boot Actuator. Grafana is pre-configured to visualize JVM state.
 * **Security**: Automatic OIDC realm import for Keycloak on startup.

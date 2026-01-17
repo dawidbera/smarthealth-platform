@@ -53,4 +53,8 @@ export class ApiService {
   getInvoices(): Observable<Invoice[]> {
     return this.http.get<Invoice[]>(`${this.baseUrl}/billing/invoices`);
   }
+
+  getLatestTelemetry(serialNumber: string): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/device/telemetry/${serialNumber}/latest`);
+  }
 }
