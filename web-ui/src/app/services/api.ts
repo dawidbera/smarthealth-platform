@@ -7,23 +7,22 @@ export interface Patient {
   firstName: string;
   lastName: string;
   email: string;
-  phoneNumber: string;
-  dateOfBirth: string;
+  pesel: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
-  private baseUrl = 'http://localhost:8080'; // Adres API Gateway
+  private baseUrl = 'http://localhost:8080/patient'; // Gateway prefix
 
   constructor(private http: HttpClient) { }
 
   getPatients(): Observable<Patient[]> {
-    return this.http.get<Patient[]>(`${this.baseUrl}/patient/api/patients`);
+    return this.http.get<Patient[]>(`${this.baseUrl}/patient`);
   }
 
   createPatient(patient: Patient): Observable<Patient> {
-    return this.http.post<Patient>(`${this.baseUrl}/patient/api/patients`, patient);
+    return this.http.post<Patient>(`${this.baseUrl}/patient`, patient);
   }
 }

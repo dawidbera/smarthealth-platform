@@ -18,23 +18,19 @@
           <div class="row g-3">
             <div class="col-md-6">
               <label class="form-label">First Name</label>
-              <input type="text" class="form-control" formControlName="firstName" [class.is-invalid]="patientForm.get('firstName')?.invalid && patientForm.get('firstName')?.touched">
+              <input type="text" class="form-control" formControlName="firstName">
             </div>
             <div class="col-md-6">
               <label class="form-label">Last Name</label>
-              <input type="text" class="form-control" formControlName="lastName" [class.is-invalid]="patientForm.get('lastName')?.invalid && patientForm.get('lastName')?.touched">
+              <input type="text" class="form-control" formControlName="lastName">
             </div>
             <div class="col-12">
               <label class="form-label">Email Address</label>
-              <input type="email" class="form-control" formControlName="email" [class.is-invalid]="patientForm.get('email')?.invalid && patientForm.get('email')?.touched">
+              <input type="email" class="form-control" formControlName="email">
             </div>
-            <div class="col-md-6">
-              <label class="form-label">Phone Number</label>
-              <input type="text" class="form-control" formControlName="phoneNumber" placeholder="+48..." formControlName="phoneNumber">
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Date of Birth</label>
-              <input type="date" class="form-control" formControlName="dateOfBirth">
+            <div class="col-12">
+              <label class="form-label">PESEL</label>
+              <input type="text" class="form-control" formControlName="pesel" placeholder="11 digits">
             </div>
           </div>
         </div>
@@ -51,15 +47,9 @@
   <div class="spinner-border text-primary" role="status">
     <span class="visually-hidden">Loading...</span>
   </div>
-  <p class="mt-2 text-muted">Fetching patients data...</p>
 </div>
 
-<div *ngIf="error" class="alert alert-danger shadow-sm">
-  <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ error }}
-  <button class="btn btn-outline-danger btn-sm ms-3" (click)="loadPatients()">Retry</button>
-</div>
-
-<div *ngIf="!loading && !error" class="card shadow-sm">
+<div *ngIf="!loading" class="card shadow-sm">
   <div class="card-body p-0">
     <div class="table-responsive">
       <table class="table table-hover mb-0">
@@ -67,8 +57,7 @@
           <tr>
             <th>Name</th>
             <th>Email</th>
-            <th>Phone</th>
-            <th>Date of Birth</th>
+            <th>PESEL</th>
             <th class="text-end">Actions</th>
           </tr>
         </thead>
@@ -76,17 +65,14 @@
           <tr *ngFor="let patient of patients">
             <td><strong>{{ patient.firstName }} {{ patient.lastName }}</strong></td>
             <td>{{ patient.email }}</td>
-            <td>{{ patient.phoneNumber }}</td>
-            <td>{{ patient.dateOfBirth }}</td>
+            <td>{{ patient.pesel }}</td>
             <td class="text-end">
               <button class="btn btn-outline-secondary btn-sm me-1"><i class="bi bi-pencil"></i></button>
               <button class="btn btn-outline-danger btn-sm"><i class="bi bi-trash"></i></button>
             </td>
           </tr>
           <tr *ngIf="patients.length === 0">
-            <td colspan="5" class="text-center py-4 text-muted">
-              No patients found in the system.
-            </td>
+            <td colspan="4" class="text-center py-4 text-muted">No patients found.</td>
           </tr>
         </tbody>
       </table>

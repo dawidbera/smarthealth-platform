@@ -22,8 +22,7 @@ export class Patients implements OnInit {
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      phoneNumber: ['', Validators.required],
-      dateOfBirth: ['', Validators.required]
+      pesel: ['', [Validators.required, Validators.minLength(11), Validators.maxLength(11)]]
     });
   }
 
@@ -48,8 +47,7 @@ export class Patients implements OnInit {
 
   onSubmit(): void {
     if (this.patientForm.valid) {
-      const newPatient: Patient = this.patientForm.value;
-      this.apiService.createPatient(newPatient).subscribe({
+      this.apiService.createPatient(this.patientForm.value).subscribe({
         next: () => {
           this.loadPatients();
           this.patientForm.reset();
@@ -57,7 +55,7 @@ export class Patients implements OnInit {
         },
         error: (err) => {
           console.error('Error creating patient', err);
-          alert('Failed to add patient. Check console for details.');
+          alert('Failed to add patient.');
         }
       });
     }
