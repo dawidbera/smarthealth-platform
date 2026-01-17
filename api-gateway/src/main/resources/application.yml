@@ -35,6 +35,14 @@ spring:
           uri: http://localhost:8083
           predicates:
             - Path=/billing/**
+        - id: device-service
+          uri: http://127.0.0.1:8085
+          predicates:
+            - Path=/device/**
+        - id: analytics-service
+          uri: http://127.0.0.1:8086
+          predicates:
+            - Path=/analytics/**
 
 management:
   endpoints:

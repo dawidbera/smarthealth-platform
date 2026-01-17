@@ -1,0 +1,36 @@
+package io.smartcare.platform.analytics.listener;
+
+import io.smartcare.platform.analytics.config.AnalyticsRabbitMQConfig;
+import io.smartcare.platform.analytics.domain.TelemetryRecord;
+import io.smartcare.platform.analytics.dto.TelemetryData;
+import io.smartcare.platform.analytics.repository.TelemetryRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
+
+@Component
+@Slf4j
+@RequiredArgsConstructor
+public class TelemetryEventListener {
+
+    private final TelemetryRepository telemetryRepository;
+
+    @RabbitListener(queues = AnalyticsRabbitMQConfig.QUEUE_ANALYTICS)
+    public void handleTelemetryUpdate(TelemetryData data) {
+        log.info("ANALYTICS RECEIVED: Data for device {}", data.serialNumber());
+
+        TelemetryRecord record = TelemetryRecord.builder()
+                .serialNumber(data.serialNumber())
+                .value(data.value())
+                .unit(data.unit())
+                .timestamp(data.timestamp())
+                .receivedAt(LocalDateTime.now())
+                .build();
+
+        telemetryRepository.save(record);
+        log.debug("Telemetry record saved to analytics DB");
+    }
+}

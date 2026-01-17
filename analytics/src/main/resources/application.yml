@@ -4,6 +4,20 @@ server:
 spring:
   application:
     name: analytics-service
+  datasource:
+    url: jdbc:postgresql://localhost:5436/analytics_db
+    username: user
+    password: password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
 
 management:
   endpoints:
