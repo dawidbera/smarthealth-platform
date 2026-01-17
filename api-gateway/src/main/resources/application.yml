@@ -34,6 +34,10 @@ spring:
               - OPTIONS
             allowedHeaders: "*"
       routes:
+        - id: analytics-service
+          uri: ${ANALYTICS_SERVICE_URL:http://localhost:8086}
+          predicates:
+            - Path=/analytics/**
         - id: patient-service
           uri: ${PATIENT_SERVICE_URL:http://localhost:8081}
           predicates:
@@ -52,11 +56,6 @@ spring:
             - Path=/device/**
           filters:
             - RewritePath=/device/(?<segment>.*),/$\{segment}
-        - id: analytics-service
-          uri: ${ANALYTICS_SERVICE_URL:http://localhost:8086}
-          predicates:
-            - Path=/analytics/**
-
 
 management:
   endpoints:

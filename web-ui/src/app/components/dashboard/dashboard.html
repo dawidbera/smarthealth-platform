@@ -58,9 +58,72 @@
   <div class="col-md-6">
     <div class="card shadow-sm border-0">
       <div class="card-body">
-        <h5><i class="bi bi-graph-up me-2 text-success"></i>Analytics</h5>
-        <p class="text-muted">Telemetry data is archived in PostgreSQL for historical trends and AI analysis.</p>
-        <button class="btn btn-link p-0 text-decoration-none text-success" disabled>View history (coming soon) &rarr;</button>
+        <h5><i class="bi bi-graph-up me-2 text-success"></i>Analytics & Trends</h5>
+        @if (stats) {
+          <div class="row mt-3 text-center">
+            <div class="col-4">
+              <div class="small text-muted">Avg BPM</div>
+              <div class="fw-bold">{{ stats.average }}</div>
+            </div>
+            <div class="col-4">
+              <div class="small text-muted">Max BPM</div>
+              <div class="fw-bold">{{ stats.max }}</div>
+            </div>
+            <div class="col-4">
+              <div class="small text-muted">Records</div>
+              <div class="fw-bold">{{ stats.count }}</div>
+            </div>
+          </div>
+          <div class="alert mt-3 py-2 small" [ngClass]="stats.status.includes('Normal') ? 'alert-success' : 'alert-warning'">
+            <i class="bi" [ngClass]="stats.status.includes('Normal') ? 'bi-check-circle' : 'bi-exclamation-triangle'"></i>
+            {{ stats.status }}
+          </div>
+        } @else {
+          <p class="text-muted mt-3">Calculating health trends...</p>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- History Table -->
+<div class="row g-4 mt-2">
+  <div class="col-12">
+    <div class="card shadow-sm border-0">
+      <div class="card-header bg-white border-0 pt-4">
+        <h5 class="mb-0">Recent Readings History</h5>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Time</th>
+                <th>Device SN</th>
+                <th>Value</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (record of history; track record.id) {
+                <tr>
+                  <td>{{ record.timestamp | date:'HH:mm:ss' }}</td>
+                  <td><code class="small">{{ record.serialNumber }}</code></td>
+                  <td><span class="fw-bold">{{ record.value }}</span> {{ record.unit }}</td>
+                  <td>
+                    <span class="badge" [ngClass]="record.value > 100 ? 'bg-warning' : 'bg-info'">
+                      {{ record.value > 100 ? 'Elevated' : 'Normal' }}
+                    </span>
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="4" class="text-center text-muted py-4">No historical records found yet.</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>

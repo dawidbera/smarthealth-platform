@@ -14,7 +14,10 @@ import { interval, Subscription } from 'rxjs';
 export class Dashboard implements OnInit, OnDestroy {
   latestHeartRate: number | null = null;
   deviceStatus: string = 'Offline';
+  history: any[] = [];
+  stats: any = null;
   private subscription: Subscription | null = null;
+  private statsSubscription: Subscription | null = null;
 
   constructor(private apiService: ApiService) {}
 
@@ -23,12 +26,22 @@ export class Dashboard implements OnInit, OnDestroy {
     this.subscription = interval(5000).subscribe(() => {
       this.fetchTelemetry();
     });
+
+    // Poll stats and history every 10 seconds
+    this.statsSubscription = interval(10000).subscribe(() => {
+      this.fetchAnalytics();
+    });
+
     this.fetchTelemetry();
+    this.fetchAnalytics();
   }
 
   ngOnDestroy(): void {
     if (this.subscription) {
       this.subscription.unsubscribe();
+    }
+    if (this.statsSubscription) {
+      this.statsSubscription.unsubscribe();
     }
   }
 
@@ -46,6 +59,16 @@ export class Dashboard implements OnInit, OnDestroy {
       error: () => {
         this.deviceStatus = 'Connection Error';
       }
+    });
+  }
+
+  fetchAnalytics(): void {
+    const sn = 'HR-MON-001';
+    this.apiService.getTelemetryHistory(sn, 5).subscribe(data => {
+      this.history = data;
+    });
+    this.apiService.getTelemetryStats(sn).subscribe(data => {
+      this.stats = data;
     });
   }
 }

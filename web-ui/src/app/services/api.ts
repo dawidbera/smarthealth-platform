@@ -57,4 +57,12 @@ export class ApiService {
   getLatestTelemetry(serialNumber: string): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}/device/telemetry/${serialNumber}/latest`);
   }
+
+  getTelemetryHistory(serialNumber: string, limit: number = 10): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/analytics/device/${serialNumber}/history?limit=${limit}`);
+  }
+
+  getTelemetryStats(serialNumber: string): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/analytics/device/${serialNumber}/stats`);
+  }
 }

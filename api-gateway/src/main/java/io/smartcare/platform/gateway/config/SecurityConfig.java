@@ -21,7 +21,7 @@ public class SecurityConfig {
         http
             .authorizeExchange(exchanges -> exchanges
                 .pathMatchers("/actuator/**").permitAll()
-                .pathMatchers("/patient/**", "/appointment/**", "/billing/**", "/device/**").permitAll()
+                .pathMatchers("/patient/**", "/appointment/**", "/billing/**", "/device/**", "/analytics/**").permitAll()
                 .anyExchange().authenticated()
             )
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
