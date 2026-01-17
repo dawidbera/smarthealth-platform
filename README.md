@@ -45,22 +45,24 @@ docker compose up --build -d
 ```
 
 ### 3. Access
-* **API Gateway**: http://localhost:8080 (secured via OIDC)
-* **Keycloak**: http://localhost:8180 (Admin: admin/admin, Realm: smarthealth)
+* **Frontend UI**: http://localhost:4200 (Demo Mode: No login required)
+* **API Gateway**: http://localhost:8080
 * **Grafana**: http://localhost:3000 (Admin: admin/admin)
 * **Prometheus**: http://localhost:9090
 * **RabbitMQ UI**: http://localhost:15672 (guest/guest)
 
-## Testing Telemetry
-To simulate heart rate monitor data, run the following script in a separate terminal:
-```bash
-./infra/simulator.sh
-```
-The Dashboard will automatically pick up the data and update its status from "Waiting for sensor..." to "Online".
+## Testing Telemetry & Analytics
+To simulate live health data and see history/trends on the dashboard:
+1. Run the simulator script:
+   ```bash
+   ./infra/simulator.sh
+   ```
+2. Open the **Dashboard** in your browser.
+3. Observe **Live Heart Rate** (Redis cache) and **Analytics & Trends** (PostgreSQL history).
 
 ## Infrastructure Details
 * **Observability**: Each service exports metrics to Prometheus via Spring Boot Actuator. Grafana is pre-configured to visualize JVM state.
-* **Security**: Automatic OIDC realm import for Keycloak on startup.
+* **Security (Demo Mode)**: Currently, the platform operates with open access for easier testing. OIDC/Keycloak is available in the infrastructure but redirection is disabled in this branch.
 * **Memory Management**: Services are limited to **256MB-512MB RAM** to ensure stability on developer machines.
 
 ## Services & Ports
