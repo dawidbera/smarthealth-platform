@@ -22,24 +22,23 @@ export interface Appointment {
   providedIn: 'root'
 })
 export class ApiService {
-  private patientUrl = 'http://localhost:8080/patient';
-  private appointmentUrl = 'http://localhost:8080/appointment';
+  private baseUrl = 'http://localhost:8080';
 
   constructor(private http: HttpClient) { }
 
   getPatients(): Observable<Patient[]> {
-    return this.http.get<Patient[]>(`${this.patientUrl}/patient`);
+    return this.http.get<Patient[]>(`${this.baseUrl}/patient`);
   }
 
   createPatient(patient: Patient): Observable<Patient> {
-    return this.http.post<Patient>(`${this.patientUrl}/patient`, patient);
+    return this.http.post<Patient>(`${this.baseUrl}/patient`, patient);
   }
 
   getAppointments(): Observable<Appointment[]> {
-    return this.http.get<Appointment[]>(`${this.appointmentUrl}/appointment`);
+    return this.http.get<Appointment[]>(`${this.baseUrl}/appointment`);
   }
 
   bookAppointment(appointment: Appointment): Observable<Appointment> {
-    return this.http.post<Appointment>(`${this.appointmentUrl}/appointment`, appointment);
+    return this.http.post<Appointment>(`${this.baseUrl}/appointment`, appointment);
   }
 }
