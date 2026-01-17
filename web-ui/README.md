@@ -1,59 +1,33 @@
-# WebUi
+# SmartHealth Web UI
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.0.
+This is the Angular-based frontend for the SmartHealth Platform.
 
-## Development server
+## Features
+- **Dashboard**: Overview of system status and metrics.
+- **Patient Management**: Register and list patients.
+- **Appointment Scheduling**: Book appointments with healthcare providers.
+- **OIDC Security**: Integrated with Keycloak for secure access.
 
-To start a local development server, run:
+## Tech Stack
+- **Framework**: Angular 19+ (Standalone Components).
+- **Styling**: Bootstrap 5 + Bootstrap Icons.
+- **Security**: angular-oauth2-oidc.
+- **API**: Communication via API Gateway (Port 8080).
 
+## Local Development
+
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+2. Start development server:
+   ```bash
+   npm start
+   ```
+3. Access at `http://localhost:4200`.
+
+## Docker Deployment
+The UI is served using Nginx.
 ```bash
-ng serve
+docker compose up --build -d web-ui
 ```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.

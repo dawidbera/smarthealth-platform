@@ -4,35 +4,30 @@ This document describes the technical setup of the SmartHealth Platform.
 
 ## Containers (Docker Compose)
 
-| Service | Image | Internal Port | External Port | Memory Limit |
-|---------|-------|---------------|---------------|--------------|
-| `sh-postgres` | `postgres:16-alpine` | 5432 | 5432 | 300MB |
-| `sh-rabbitmq` | `rabbitmq:3.13-management` | 5672, 15672 | 5672, 15672 | 400MB |
-| `sh-redis` | `redis:7.2-alpine` | 6379 | 6379 | 100MB |
-| `sh-keycloak` | `keycloak:24.0.0` | 8080 | 8180 | 700MB |
-| `sh-gateway` | `smarthealth-gateway:latest` | 8080 | 8080 | 256MB |
-| `sh-patient` | `smarthealth-patient:latest` | 8081 | 8081 | 256MB |
-| `sh-appointment`| `smarthealth-appointment:latest`| 8082 | 8082 | 256MB |
-| `sh-billing` | `smarthealth-billing:latest` | 8083 | 8083 | 256MB |
-| `sh-notification`| `smarthealth-notification:latest`| 8084 | 8084 | 256MB |
-| `sh-device` | `smarthealth-device:latest` | 8085 | 8085 | 256MB |
-| `sh-analytics` | `smarthealth-analytics:latest` | 8086 | 8086 | 256MB |
+| Service | Image | Int Port | Ext Port | Memory Limit | JVM Xmx |
+|---------|-------|----------|----------|--------------|---------|
+| `sh-postgres` | `postgres:16-alpine` | 5432 | 5432 | 300MB | - |
+| `sh-rabbitmq` | `rabbitmq:3.13-management` | 5672 | 5672 | 400MB | - |
+| `sh-redis` | `redis:7.2-alpine` | 6379 | 6379 | 100MB | - |
+| `sh-keycloak` | `keycloak:24.0.0` | 8080 | 8180 | 700MB | - |
+| `sh-gateway` | `sh-api-gateway` | 8080 | 8080 | 512MB | 384m |
+| `sh-patient` | `sh-patient-service` | 8081 | 8081 | 256MB | 192m |
+| `sh-appointment`| `sh-appointment-service`| 8082 | 8082 | 256MB | 192m |
+| `sh-billing` | `sh-billing-service` | 8083 | 8083 | 256MB | 192m |
+| `sh-notification`| `sh-notification-service`| 8084 | 8084 | 300MB | 192m |
+| `sh-device` | `sh-device-service` | 8085 | 8085 | 256MB | 192m |
+| `sh-analytics` | `sh-analytics-service` | 8086 | 8086 | 256MB | 192m |
+| `sh-web-ui` | `sh-web-ui` (Nginx) | 80 | 4200 | 128MB | - |
+| `sh-prometheus`| `prom/prometheus` | 9090 | 9090 | 256MB | - |
+| `sh-grafana` | `grafana/grafana` | 3000 | 3000 | 256MB | - |
 
 ## Databases
 All databases are hosted on the `sh-postgres` instance:
-- `patient_db`
-- `appointment_db`
-- `billing_db`
-- `device_db`
-- `analytics_db`
+- `patient_db`, `appointment_db`, `billing_db`, `device_db`, `analytics_db`
+
+## Observability
+- **Prometheus**: Scrapes `/actuator/prometheus` from all services every 15s.
+- **Grafana**: Visualizes JVM metrics (Memory, CPU, GC, Threads).
 
 ## Security (OIDC)
-Keycloak realm `smarthealth` manages users and clients.
-- **Client**: `api-gateway`
-- **Secret**: Managed via `application.yml`
-- **Flow**: Authorization Code Flow for UI, Bearer JWT for API.
-
-## JVM Tuning
-All Spring Boot applications are configured with:
-`-Xmx192m -Xms128m`
-This ensures they operate reliably within the 256MB Docker memory limit.
+Keycloak automatically imports the `smarthealth` realm from `infra/keycloak/realm-export.json` on startup.
