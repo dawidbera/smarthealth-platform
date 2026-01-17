@@ -10,19 +10,36 @@ export interface Patient {
   nationalId: string;
 }
 
+export interface Appointment {
+  id?: number;
+  patientId: number;
+  doctorId: number;
+  appointmentTime: string;
+  status?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
-  private baseUrl = 'http://localhost:8080/patient'; // Gateway prefix
+  private patientUrl = 'http://localhost:8080/patient';
+  private appointmentUrl = 'http://localhost:8080/appointment';
 
   constructor(private http: HttpClient) { }
 
   getPatients(): Observable<Patient[]> {
-    return this.http.get<Patient[]>(`${this.baseUrl}/patient`);
+    return this.http.get<Patient[]>(`${this.patientUrl}/patient`);
   }
 
   createPatient(patient: Patient): Observable<Patient> {
-    return this.http.post<Patient>(`${this.baseUrl}/patient`, patient);
+    return this.http.post<Patient>(`${this.patientUrl}/patient`, patient);
+  }
+
+  getAppointments(): Observable<Appointment[]> {
+    return this.http.get<Appointment[]>(`${this.appointmentUrl}/appointment`);
+  }
+
+  bookAppointment(appointment: Appointment): Observable<Appointment> {
+    return this.http.post<Appointment>(`${this.appointmentUrl}/appointment`, appointment);
   }
 }
