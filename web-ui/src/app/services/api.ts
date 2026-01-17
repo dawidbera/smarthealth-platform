@@ -7,7 +7,7 @@ export interface Patient {
   firstName: string;
   lastName: string;
   email: string;
-  pesel: string;
+  nationalId: string;
 }
 
 @Injectable({

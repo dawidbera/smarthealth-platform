@@ -22,7 +22,7 @@ export class Patients implements OnInit {
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      pesel: ['', [Validators.required, Validators.minLength(11), Validators.maxLength(11)]]
+      nationalId: ['', [Validators.required, Validators.minLength(5)]]
     });
   }
 

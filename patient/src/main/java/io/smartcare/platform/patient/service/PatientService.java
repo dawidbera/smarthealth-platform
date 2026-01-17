@@ -21,8 +21,8 @@ public class PatientService {
     public Patient registerPatient(Patient patient) {
         log.info("Registering patient: {} {}", patient.getFirstName(), patient.getLastName());
         
-        if (patientRepository.findByPesel(patient.getPesel()).isPresent()) {
-            throw new IllegalArgumentException("Patient with PESEL " + patient.getPesel() + " already exists");
+        if (patientRepository.findByNationalId(patient.getNationalId()).isPresent()) {
+            throw new IllegalArgumentException("Patient with ID " + patient.getNationalId() + " already exists");
         }
 
         Patient savedPatient = patientRepository.save(patient);

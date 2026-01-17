@@ -34,10 +34,10 @@ class PatientServiceTest {
         Patient patient = Patient.builder()
                 .firstName("Jan")
                 .lastName("Kowalski")
-                .pesel("12345678901")
+                .nationalId("12345678901")
                 .build();
 
-        when(patientRepository.findByPesel(patient.getPesel())).thenReturn(Optional.empty());
+        when(patientRepository.findByNationalId(patient.getNationalId())).thenReturn(Optional.empty());
         when(patientRepository.save(any(Patient.class))).thenAnswer(i -> {
             Patient p = i.getArgument(0);
             p.setId(1L);
@@ -57,8 +57,8 @@ class PatientServiceTest {
     @Test
     void shouldThrowExceptionWhenPeselAlreadyExists() {
         // Given
-        Patient patient = Patient.builder().pesel("12345678901").build();
-        when(patientRepository.findByPesel("12345678901")).thenReturn(Optional.of(patient));
+        Patient patient = Patient.builder().nationalId("12345678901").build();
+        when(patientRepository.findByNationalId("12345678901")).thenReturn(Optional.of(patient));
 
         // When & Then
         assertThrows(IllegalArgumentException.class, () -> patientService.registerPatient(patient));

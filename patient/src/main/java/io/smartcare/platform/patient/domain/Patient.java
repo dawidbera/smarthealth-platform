@@ -26,5 +26,5 @@ public class Patient {
     private String email;
 
     @Column(unique = true, nullable = false)
-    private String pesel;
+    private String nationalId;
 }

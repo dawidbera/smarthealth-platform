@@ -1,4 +1,4 @@
-# Etap budowania
+# Build stage
 FROM node:20-alpine AS build
 WORKDIR /app
 COPY web-ui/package*.json ./
@@ -6,10 +6,10 @@ RUN npm install
 COPY web-ui/ ./
 RUN npx ng build --configuration production
 
-# Etap uruchamiania (Nginx)
+# Execution stage (Nginx)
 FROM nginx:alpine
 COPY --from=build /app/dist/web-ui/browser /usr/share/nginx/html
-# Kopiujemy własną konfigurację Nginx, aby obsłużyć Angular Routing
+# Copy custom Nginx configuration to handle Angular Routing
 RUN echo 'server { \
     listen 80; \
     location / { \

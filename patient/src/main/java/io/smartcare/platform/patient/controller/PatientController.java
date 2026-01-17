@@ -31,7 +31,7 @@ public class PatientController {
                 .firstName(request.firstName())
                 .lastName(request.lastName())
                 .email(request.email())
-                .pesel(request.pesel())
+                .nationalId(request.nationalId())
                 .build();
 
         Patient savedPatient = patientService.registerPatient(patient);
