@@ -4,7 +4,10 @@ import io.smartcare.platform.appointment.domain.Appointment;
 import io.smartcare.platform.appointment.domain.AppointmentStatus;
 import io.smartcare.platform.appointment.dto.BookAppointmentRequest;
 import io.smartcare.platform.appointment.repository.AppointmentRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.amqp.core.AmqpAdmin;
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -47,15 +50,22 @@ class AppointmentIntegrationTest {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
+    @Autowired
+    private AmqpAdmin amqpAdmin;
+
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
-        // Point the appointment service to our WireMock instance instead of the real patient service
         registry.add("services.patient-service.url", () -> "http://localhost:${wiremock.server.port}");
+    }
+
+    @BeforeEach
+    void setUp() {
+        // Ensure exchange exists to avoid 404 logs during test execution
+        amqpAdmin.declareExchange(new TopicExchange("internal.exchange"));
     }
 
     @Test
     void shouldBookAppointmentAndPublishEvent() {
-        // Given: WireMock stub for patient existence check
         stubFor(get(urlEqualTo("/patient/1/exists"))
                 .willReturn(aResponse()
                         .withStatus(200)
@@ -64,19 +74,11 @@ class AppointmentIntegrationTest {
 
         BookAppointmentRequest request = new BookAppointmentRequest(1L, 101L, LocalDateTime.now());
 
-        // When
         ResponseEntity<Appointment> response = restTemplate.postForEntity("/appointment", request, Appointment.class);
 
-        // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getStatus()).isEqualTo(AppointmentStatus.BOOKED);
-
-        // Verify in DB
         assertThat(appointmentRepository.findAll()).hasSize(1);
-
-        // Verify event in RabbitMQ (we can try to receive it from the exchange/queue if we define a temporary one, 
-        // but here we just check if the call didn't fail)
-        // In a real IT we could use a dedicated test queue.
     }
 }

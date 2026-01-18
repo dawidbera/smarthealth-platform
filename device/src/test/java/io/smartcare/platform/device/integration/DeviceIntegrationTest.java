@@ -1,7 +1,10 @@
 package io.smartcare.platform.device.integration;
 
 import io.smartcare.platform.device.dto.TelemetryData;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.amqp.core.AmqpAdmin;
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -44,27 +47,31 @@ class DeviceIntegrationTest {
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
+    @Autowired
+    private AmqpAdmin amqpAdmin;
+
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.data.redis.host", redis::getHost);
         registry.add("spring.data.redis.port", redis::getFirstMappedPort);
     }
 
+    @BeforeEach
+    void setUp() {
+        // Ensure exchange exists to avoid 404 logs during test execution
+        amqpAdmin.declareExchange(new TopicExchange("internal.exchange"));
+    }
+
     @Test
     void shouldStoreTelemetryInRedisAndReturnOk() {
-        // Given
         String sn = "SN-IT-999";
         TelemetryData data = new TelemetryData(sn, 72.0, "BPM", LocalDateTime.now());
 
-        // When
         ResponseEntity<Void> response = restTemplate.postForEntity("/telemetry", data, Void.class);
 
-        // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-        // Verify in Redis
         Object cachedData = redisTemplate.opsForValue().get("device:last:" + sn);
         assertThat(cachedData).isNotNull();
-        // Since it's stored as JSON/Object, we just check existence for simplicity here
     }
 }
