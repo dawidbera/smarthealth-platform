@@ -13,7 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.cloud.contract.stubrunner.spring.AutoConfigureStubRunner;
+import org.springframework.cloud.contract.stubrunner.spring.StubRunnerProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -25,12 +26,14 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
-@AutoConfigureWireMock(port = 0)
+@AutoConfigureStubRunner(
+        ids = "io.smartcare.platform:patient:+:stubs:8090",
+        stubsMode = StubRunnerProperties.StubsMode.LOCAL
+)
 class AppointmentIntegrationTest {
 
     @Container
@@ -55,7 +58,8 @@ class AppointmentIntegrationTest {
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
-        registry.add("services.patient-service.url", () -> "http://localhost:${wiremock.server.port}");
+        // Map the patient service URL to the Stub Runner port
+        registry.add("services.patient-service.url", () -> "http://localhost:8090");
     }
 
     @BeforeEach
@@ -66,12 +70,7 @@ class AppointmentIntegrationTest {
 
     @Test
     void shouldBookAppointmentAndPublishEvent() {
-        stubFor(get(urlEqualTo("/patient/1/exists"))
-                .willReturn(aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBody("true")));
-
+        // The stub for patient-service is automatically running on port 8090
         BookAppointmentRequest request = new BookAppointmentRequest(1L, 101L, LocalDateTime.now());
 
         ResponseEntity<Appointment> response = restTemplate.postForEntity("/appointment", request, Appointment.class);

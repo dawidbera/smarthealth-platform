@@ -1,0 +1,9 @@
+description: "Check if patient exists by ID"
+request:
+  method: GET
+  url: /patient/1/exists
+response:
+  status: 200
+  body: true
+  headers:
+    Content-Type: application/json

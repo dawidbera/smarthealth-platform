@@ -1,0 +1,13 @@
+description: "Publish device telemetry update event"
+label: "trigger_telemetry_update"
+input:
+  triggeredBy: triggerTelemetryUpdate()
+outputMessage:
+  sentTo: internal.exchange
+  headers:
+    amqp_routingKey: device.telemetry.update
+  body:
+    serialNumber: "SN-CONTRACT-001"
+    value: 85.0
+    unit: "BPM"
+    timestamp: "2026-01-18T10:00:00"

@@ -1,0 +1,9 @@
+description: "Publish appointment booked event"
+label: "trigger_booked_event"
+input:
+  triggeredBy: triggerBookedEvent()
+outputMessage:
+  sentTo: internal.exchange
+  headers:
+    amqp_routingKey: appointment.booked
+  body: "Appointment booked with ID: 1"
