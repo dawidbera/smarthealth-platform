@@ -25,6 +25,7 @@ flowchart TD
   MQ --> NOTIF[Notification Service]
   
   PAT & APP & BILL & DEV & ANL & GW --> PROM[(Prometheus)]
+  PAT & APP & BILL & DEV & ANL & GW --> ZIP[(Zipkin)]
   PROM --> GRAF[Grafana]
 ```
 
@@ -48,6 +49,7 @@ docker compose up --build -d
 * **Frontend UI**: http://localhost:4200 (Demo Mode: No login required)
 * **API Gateway**: http://localhost:8080
 * **Grafana**: http://localhost:3000 (Admin: admin/admin)
+* **Zipkin**: http://localhost:9411 (Distributed Tracing)
 * **Prometheus**: http://localhost:9090
 * **RabbitMQ UI**: http://localhost:15672 (guest/guest)
 
@@ -61,7 +63,7 @@ To simulate live health data and see history/trends on the dashboard:
 3. Observe **Live Heart Rate** (Redis cache) and **Analytics & Trends** (PostgreSQL history).
 
 ## Infrastructure Details
-* **Observability**: Each service exports metrics to Prometheus via Spring Boot Actuator. Grafana is pre-configured to visualize JVM state.
+* **Observability**: Each service exports metrics to Prometheus and traces to Zipkin. Grafana is pre-configured with JVM dashboards via provisioning.
 * **Security (Demo Mode)**: Currently, the platform operates with open access for easier testing. OIDC/Keycloak is available in the infrastructure but redirection is disabled in this branch.
 * **Memory Management**: Services are limited to **256MB-512MB RAM** to ensure stability on developer machines.
 

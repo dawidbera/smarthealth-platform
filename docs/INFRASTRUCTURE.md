@@ -19,6 +19,7 @@ This document describes the technical setup of the SmartHealth Platform.
 | `sh-analytics` | `sh-analytics-service` | 8086 | 8086 | 256MB | 192m |
 | `sh-web-ui` | `sh-web-ui` (Nginx) | 80 | 4200 | 128MB | - |
 | `sh-prometheus`| `prom/prometheus` | 9090 | 9090 | 256MB | - |
+| `sh-zipkin` | `openzipkin/zipkin` | 9411 | 9411 | 256MB | - |
 | `sh-grafana` | `grafana/grafana` | 3000 | 3000 | 256MB | - |
 
 ## Databases
@@ -27,7 +28,8 @@ All databases are hosted on the `sh-postgres` instance:
 
 ## Observability
 - **Prometheus**: Scrapes `/actuator/prometheus` from all services every 15s.
-- **Grafana**: Visualizes JVM metrics (Memory, CPU, GC, Threads).
+- **Grafana**: Visualizes JVM metrics (Memory, CPU, GC, Threads). Pre-configured via provisioning.
+- **Zipkin**: Collects and visualizes distributed traces (latency, error analysis).
 
 ## Security (OIDC)
 Keycloak automatically imports the `smarthealth` realm from `infra/keycloak/realm-export.json` on startup.
