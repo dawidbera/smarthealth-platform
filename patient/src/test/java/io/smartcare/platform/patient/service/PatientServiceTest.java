@@ -3,6 +3,7 @@ package io.smartcare.platform.patient.service;
 import io.smartcare.platform.patient.config.RabbitMQConfig;
 import io.smartcare.platform.patient.domain.Patient;
 import io.smartcare.platform.patient.repository.PatientRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,7 +14,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,40 +29,47 @@ class PatientServiceTest {
     @InjectMocks
     private PatientService patientService;
 
-    @Test
-    void shouldRegisterNewPatientSuccessfully() {
-        // Given
-        Patient patient = Patient.builder()
+    private Patient testPatient;
+
+    @BeforeEach
+    void setUp() {
+        testPatient = Patient.builder()
+                .id(1L)
                 .firstName("Jan")
                 .lastName("Kowalski")
                 .nationalId("12345678901")
+                .email("jan@example.com")
                 .build();
+    }
 
-        when(patientRepository.findByNationalId(patient.getNationalId())).thenReturn(Optional.empty());
-        when(patientRepository.save(any(Patient.class))).thenAnswer(i -> {
-            Patient p = i.getArgument(0);
-            p.setId(1L);
-            return p;
-        });
+    @Test
+    void registerPatient_ShouldSucceed_WhenNationalIdIsUnique() {
+        // Given
+        when(patientRepository.findByNationalId(anyString())).thenReturn(Optional.empty());
+        when(patientRepository.save(any(Patient.class))).thenReturn(testPatient);
 
         // When
-        Patient savedPatient = patientService.registerPatient(patient);
+        Patient savedPatient = patientService.registerPatient(testPatient);
 
         // Then
-        assertNotNull(savedPatient.getId());
+        assertNotNull(savedPatient);
         assertEquals("Jan", savedPatient.getFirstName());
         verify(patientRepository).save(any(Patient.class));
         verify(rabbitTemplate).convertAndSend(eq(RabbitMQConfig.EXCHANGE), eq(RabbitMQConfig.ROUTING_KEY_PATIENT_CREATED), anyString());
     }
 
     @Test
-    void shouldThrowExceptionWhenPeselAlreadyExists() {
+    void registerPatient_ShouldThrowException_WhenNationalIdExists() {
         // Given
-        Patient patient = Patient.builder().nationalId("12345678901").build();
-        when(patientRepository.findByNationalId("12345678901")).thenReturn(Optional.of(patient));
+        when(patientRepository.findByNationalId("12345678901")).thenReturn(Optional.of(testPatient));
 
         // When & Then
-        assertThrows(IllegalArgumentException.class, () -> patientService.registerPatient(patient));
-        verify(patientRepository, never()).save(any());
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            patientService.registerPatient(testPatient);
+        });
+
+        assertTrue(exception.getMessage().contains("already exists"));
+        verify(patientRepository, never()).save(any(Patient.class));
+        verify(rabbitTemplate, never()).convertAndSend(anyString(), anyString(), anyString());
     }
 }

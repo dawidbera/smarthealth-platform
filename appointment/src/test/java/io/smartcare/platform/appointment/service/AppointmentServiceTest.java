@@ -16,7 +16,7 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -35,9 +35,11 @@ class AppointmentServiceTest {
     private WebClient webClient;
 
     @Mock
+    @SuppressWarnings("rawtypes")
     private WebClient.RequestHeadersUriSpec requestHeadersUriSpec;
 
     @Mock
+    @SuppressWarnings("rawtypes")
     private WebClient.RequestHeadersSpec requestHeadersSpec;
 
     @Mock
@@ -46,44 +48,57 @@ class AppointmentServiceTest {
     @InjectMocks
     private AppointmentService appointmentService;
 
+    private Appointment testAppointment;
+
     @BeforeEach
     void setUp() {
-        // Fluent API mocking for WebClient
+        testAppointment = Appointment.builder()
+                .id(1L)
+                .patientId(1L)
+                .doctorId(101L)
+                .appointmentTime(LocalDateTime.now())
+                .status(AppointmentStatus.REQUESTED)
+                .build();
+
+        // Mocking the fluent WebClient API
         when(webClientBuilder.build()).thenReturn(webClient);
-        when(webClient.get()).thenReturn(requestHeadersUriSpec);
-        when(requestHeadersUriSpec.uri(anyString(), any(Object[].class))).thenReturn(requestHeadersSpec);
-        when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
     }
 
     @Test
-    void shouldBookAppointmentWhenPatientExists() {
+    void bookAppointment_ShouldSucceed_WhenPatientExists() {
         // Given
-        Appointment appointment = Appointment.builder()
-                .patientId(1L)
-                .doctorId(10L)
-                .appointmentTime(LocalDateTime.now())
-                .build();
-
-        when(responseSpec.bodyToMono(Boolean.class)).thenReturn(Mono.just(true));
-        when(appointmentRepository.save(any(Appointment.class))).thenAnswer(i -> i.getArgument(0));
+        mockWebClientReturn(true);
+        when(appointmentRepository.save(any(Appointment.class))).thenReturn(testAppointment);
 
         // When
-        Appointment saved = appointmentService.bookAppointment(appointment);
+        Appointment result = appointmentService.bookAppointment(testAppointment);
 
         // Then
-        assertEquals(AppointmentStatus.BOOKED, saved.getStatus());
-        verify(appointmentRepository).save(any());
+        assertNotNull(result);
+        assertEquals(AppointmentStatus.BOOKED, result.getStatus());
+        verify(appointmentRepository).save(any(Appointment.class));
         verify(rabbitTemplate).convertAndSend(eq("internal.exchange"), eq("appointment.booked"), anyString());
     }
 
     @Test
-    void shouldThrowExceptionWhenPatientDoesNotExist() {
+    void bookAppointment_ShouldThrowException_WhenPatientDoesNotExist() {
         // Given
-        Appointment appointment = Appointment.builder().patientId(999L).build();
-        when(responseSpec.bodyToMono(Boolean.class)).thenReturn(Mono.just(false));
+        mockWebClientReturn(false);
 
         // When & Then
-        assertThrows(IllegalArgumentException.class, () -> appointmentService.bookAppointment(appointment));
-        verify(appointmentRepository, never()).save(any());
+        assertThrows(IllegalArgumentException.class, () -> {
+            appointmentService.bookAppointment(testAppointment);
+        });
+
+        verify(appointmentRepository, never()).save(any(Appointment.class));
+        verify(rabbitTemplate, never()).convertAndSend(anyString(), anyString(), anyString());
+    }
+
+    @SuppressWarnings("unchecked")
+    private void mockWebClientReturn(boolean exists) {
+        when(webClient.get()).thenReturn(requestHeadersUriSpec);
+        when(requestHeadersUriSpec.uri(anyString(), anyLong())).thenReturn(requestHeadersSpec);
+        when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
+        when(responseSpec.bodyToMono(Boolean.class)).thenReturn(Mono.just(exists));
     }
 }
