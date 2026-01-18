@@ -32,26 +32,26 @@ class PatientControllerTest {
 
     @Test
     void getAllPatients_ShouldReturnList() throws Exception {
-        Patient patient = Patient.builder().id(1L).firstName("Jan").build();
+        Patient patient = Patient.builder().id(1L).firstName("John").build();
         when(patientRepository.findAll()).thenReturn(List.of(patient));
 
         mockMvc.perform(get("/patient"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].firstName").value("Jan"));
+                .andExpect(jsonPath("$[0].firstName").value("John"));
     }
 
     @Test
     void createPatient_ShouldReturnCreated() throws Exception {
-        Patient patient = Patient.builder().id(1L).firstName("Jan").build();
+        Patient patient = Patient.builder().id(1L).firstName("John").build();
         when(patientService.registerPatient(any(Patient.class))).thenReturn(patient);
 
-        String json = "{\"firstName\":\"Jan\", \"lastName\":\"Kowalski\", \"email\":\"jan@example.com\", \"nationalId\":\"123\"}";
+        String json = "{\"firstName\":\"John\", \"lastName\":\"Doe\", \"email\":\"john.doe@example.com\", \"nationalId\":\"123\"}";
 
         mockMvc.perform(post("/patient")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.firstName").value("Jan"));
+                .andExpect(jsonPath("$.firstName").value("John"));
     }
 
     @Test

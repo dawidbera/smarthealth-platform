@@ -35,10 +35,10 @@ class PatientServiceTest {
     void setUp() {
         testPatient = Patient.builder()
                 .id(1L)
-                .firstName("Jan")
-                .lastName("Kowalski")
+                .firstName("John")
+                .lastName("Doe")
                 .nationalId("12345678901")
-                .email("jan@example.com")
+                .email("john.doe@example.com")
                 .build();
     }
 
@@ -53,7 +53,7 @@ class PatientServiceTest {
 
         // Then
         assertNotNull(savedPatient);
-        assertEquals("Jan", savedPatient.getFirstName());
+        assertEquals("John", savedPatient.getFirstName());
         verify(patientRepository).save(any(Patient.class));
         verify(rabbitTemplate).convertAndSend(eq(RabbitMQConfig.EXCHANGE), eq(RabbitMQConfig.ROUTING_KEY_PATIENT_CREATED), anyString());
     }
