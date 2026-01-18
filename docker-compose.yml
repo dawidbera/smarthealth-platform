@@ -76,6 +76,7 @@ services:
       - BILLING_SERVICE_URL=http://sh-billing:8083
       - DEVICE_SERVICE_URL=http://sh-device:8085
       - ANALYTICS_SERVICE_URL=http://sh-analytics:8086
+      - ZIPKIN_ENDPOINT=http://sh-zipkin:9411/api/v2/spans
       - JAVA_OPTS=-Xmx384m -Xms128m
     deploy:
       resources:
@@ -99,6 +100,7 @@ services:
       - DB_PORT=5432
       - MQ_HOST=sh-rabbitmq
       - AUTH_SERVER_URL=http://sh-keycloak:8080
+      - ZIPKIN_ENDPOINT=http://sh-zipkin:9411/api/v2/spans
       - JAVA_OPTS=-Xmx192m -Xms128m
     deploy:
       resources:
@@ -123,6 +125,7 @@ services:
       - MQ_HOST=sh-rabbitmq
       - PATIENT_SERVICE_URL=http://sh-patient:8081
       - AUTH_SERVER_URL=http://sh-keycloak:8080
+      - ZIPKIN_ENDPOINT=http://sh-zipkin:9411/api/v2/spans
       - JAVA_OPTS=-Xmx192m -Xms128m
     deploy:
       resources:
@@ -146,6 +149,7 @@ services:
       - DB_PORT=5432
       - MQ_HOST=sh-rabbitmq
       - AUTH_SERVER_URL=http://sh-keycloak:8080
+      - ZIPKIN_ENDPOINT=http://sh-zipkin:9411/api/v2/spans
       - JAVA_OPTS=-Xmx192m -Xms128m
     deploy:
       resources:
@@ -167,6 +171,7 @@ services:
     environment:
       - MQ_HOST=sh-rabbitmq
       - AUTH_SERVER_URL=http://sh-keycloak:8080
+      - ZIPKIN_ENDPOINT=http://sh-zipkin:9411/api/v2/spans
       - JAVA_OPTS=-Xmx192m -Xms128m
     deploy:
       resources:
@@ -192,6 +197,7 @@ services:
       - MQ_HOST=sh-rabbitmq
       - REDIS_HOST=sh-redis
       - AUTH_SERVER_URL=http://sh-keycloak:8080
+      - ZIPKIN_ENDPOINT=http://sh-zipkin:9411/api/v2/spans
       - JAVA_OPTS=-Xmx192m -Xms128m
     deploy:
       resources:
@@ -201,7 +207,7 @@ services:
   analytics-service:
     build:
       context: .
-      dockerfile: analytics/Dockerfile
+      dockerfile: Dockerfile
       args:
         JAR_FILE: analytics/target/*.jar
     container_name: sh-analytics
@@ -215,6 +221,7 @@ services:
       - DB_PORT=5432
       - MQ_HOST=sh-rabbitmq
       - AUTH_SERVER_URL=http://sh-keycloak:8080
+      - ZIPKIN_ENDPOINT=http://sh-zipkin:9411/api/v2/spans
       - JAVA_OPTS=-Xmx192m -Xms128m
     deploy:
       resources:
@@ -243,6 +250,17 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=admin
     depends_on:
       - prometheus
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+  zipkin:
+    image: openzipkin/zipkin:latest
+    container_name: sh-zipkin
+    restart: on-failure
+    ports:
+      - "9411:9411"
     deploy:
       resources:
         limits:
