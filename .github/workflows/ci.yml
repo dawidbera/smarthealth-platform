@@ -20,6 +20,12 @@ jobs:
           cache: maven
       - name: Build and Test with Maven
         run: ./mvnw clean test
+      - name: Upload surefire reports on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-reports
+          path: "**/target/surefire-reports/"
 
   frontend:
     name: Frontend (Angular)
