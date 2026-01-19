@@ -37,13 +37,21 @@ flowchart TD
 
 ### 1. Build the project
 ```bash
-./mvnw clean package -DskipTests
+# Recommended: use verify to generate stubs for integration tests
+./mvnw clean verify
 ```
 
 ### 2. Run the platform
 ```bash
 docker compose up --build -d
 ```
+
+## Tech Stack Highlights
+* **Backend**: Java 21, Spring Boot 3.4.x, Spring Cloud Contract
+* **Frontend**: Angular 21, Bootstrap 5, Jest 30
+* **Messaging**: RabbitMQ (internal.exchange)
+* **Data**: PostgreSQL, Redis
+* **Observability**: Prometheus, Grafana, Zipkin
 
 ### 3. Access
 * **Frontend UI**: http://localhost:4200 (Demo Mode: No login required)

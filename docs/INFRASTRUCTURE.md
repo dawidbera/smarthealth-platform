@@ -36,3 +36,8 @@ Keycloak automatically imports the `smarthealth` realm from `infra/keycloak/real
 
 ## Testing & Simulation
 - **Telemetry Simulator**: Use `./infra/simulator.sh` to send mock data to the `device-service` via the API Gateway. This is required to populate Redis and see data on the Dashboard.
+- **Test Infrastructure**:
+    - **H2 Database**: Used during Contract Tests to ensure CI independence.
+    - **Testcontainers**: Used for full Integration Tests (PostgreSQL, RabbitMQ, Redis).
+    - **Messaging Bridge**: Contract tests use a Spring Integration bridge to stub RabbitMQ interactions.
+    - **Stub Runner**: Configured in `CLASSPATH` mode to allow multi-module verification without local Maven installation.
