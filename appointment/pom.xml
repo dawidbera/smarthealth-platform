@@ -55,6 +55,13 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>io.smartcare.platform</groupId>
+            <artifactId>patient</artifactId>
+            <version>${project.version}</version>
+            <classifier>stubs</classifier>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>

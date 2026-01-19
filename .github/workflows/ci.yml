@@ -19,7 +19,7 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: Build and Test with Maven
-        run: ./mvnw clean test
+        run: ./mvnw clean verify
       - name: Upload test reports on failure
         if: failure()
         uses: actions/upload-artifact@v4
