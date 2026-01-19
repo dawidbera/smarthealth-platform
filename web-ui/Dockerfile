@@ -2,7 +2,7 @@
 FROM node:20-alpine AS build
 WORKDIR /app
 COPY web-ui/package*.json ./
-RUN npm install
+RUN npm ci --legacy-peer-deps
 COPY web-ui/ ./
 RUN npx ng build --configuration production
 

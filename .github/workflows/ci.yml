@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  backend:
+    name: Backend (Java 21)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+      - name: Build and Test with Maven
+        run: ./mvnw clean test
+
+  frontend:
+    name: Frontend (Angular)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: web-ui/package-lock.json
+      - name: Install dependencies
+        working-directory: web-ui
+        run: npm ci
+      - name: Test
+        working-directory: web-ui
+        run: npm test
+      - name: Build
+        working-directory: web-ui
+        run: npm run build

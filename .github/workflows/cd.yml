@@ -1,0 +1,118 @@
+name: CD
+
+on:
+  push:
+    branches: [ main ]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build-artifacts:
+    name: Build JARs and Web Assets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+      - name: Build JARs
+        run: ./mvnw clean package -DskipTests
+      - name: Upload JARs
+        uses: actions/upload-artifact@v4
+        with:
+          name: jars
+          path: |
+            api-gateway/target/*.jar
+            patient/target/*.jar
+            appointment/target/*.jar
+            billing/target/*.jar
+            notification/target/*.jar
+            device/target/*.jar
+            analytics/target/*.jar
+          retention-days: 1
+
+  publish-images:
+    name: Publish Docker Images
+    needs: build-artifacts
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        service:
+          - name: api-gateway
+            context: .
+            dockerfile: Dockerfile
+            jar_path: api-gateway/target/*.jar
+          - name: patient-service
+            context: .
+            dockerfile: Dockerfile
+            jar_path: patient/target/*.jar
+          - name: appointment-service
+            context: .
+            dockerfile: Dockerfile
+            jar_path: appointment/target/*.jar
+          - name: billing-service
+            context: .
+            dockerfile: Dockerfile
+            jar_path: billing/target/*.jar
+          - name: notification-service
+            context: .
+            dockerfile: Dockerfile
+            jar_path: notification/target/*.jar
+          - name: device-service
+            context: .
+            dockerfile: Dockerfile
+            jar_path: device/target/*.jar
+          - name: analytics-service
+            context: .
+            dockerfile: Dockerfile
+            jar_path: analytics/target/*.jar
+          - name: web-ui
+            context: .
+            dockerfile: web-ui/Dockerfile
+            jar_path: ""
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download JARs
+        if: matrix.service.name != 'web-ui'
+        uses: actions/download-artifact@v4
+        with:
+          name: jars
+          path: .
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/${{ matrix.service.name }}
+          tags: |
+            type=ref,event=branch
+            type=sha,format=short
+            latest
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ matrix.service.context }}
+          file: ${{ matrix.service.dockerfile }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            JAR_FILE=${{ matrix.service.jar_path }}
