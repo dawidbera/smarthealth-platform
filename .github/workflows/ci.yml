@@ -34,7 +34,7 @@ jobs:
           cache-dependency-path: web-ui/package-lock.json
       - name: Install dependencies
         working-directory: web-ui
-        run: npm ci
+        run: npm ci --legacy-peer-deps
       - name: Test
         working-directory: web-ui
         run: npm test
