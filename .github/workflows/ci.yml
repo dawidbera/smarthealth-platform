@@ -19,7 +19,7 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: Build and Test with Maven
-        run: ./mvnw clean install -DskipTests && ./mvnw test
+        run: ./mvnw clean test
       - name: Upload surefire reports on failure
         if: failure()
         uses: actions/upload-artifact@v4

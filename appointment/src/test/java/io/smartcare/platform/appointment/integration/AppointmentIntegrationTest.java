@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Testcontainers
 @AutoConfigureStubRunner(
         ids = "io.smartcare.platform:patient:+:stubs:8090",
-        stubsMode = StubRunnerProperties.StubsMode.LOCAL
+        stubsMode = StubRunnerProperties.StubsMode.CLASSPATH
 )
 class AppointmentIntegrationTest {
 
