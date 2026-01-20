@@ -45,7 +45,7 @@ class DeviceServiceTest {
     @Test
     void shouldProcessTelemetryCorrectly() {
         // Given
-        TelemetryData data = new TelemetryData("SN-123", 75.0, "BPM", LocalDateTime.now());
+        TelemetryData data = new TelemetryData("SN-123", 1L, 75.0, "BPM", LocalDateTime.now());
 
         // When
         deviceService.processTelemetry(data);

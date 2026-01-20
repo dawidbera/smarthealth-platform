@@ -65,7 +65,7 @@ class DeviceIntegrationTest {
     @Test
     void shouldStoreTelemetryInRedisAndReturnOk() {
         String sn = "SN-IT-999";
-        TelemetryData data = new TelemetryData(sn, 72.0, "BPM", LocalDateTime.now());
+        TelemetryData data = new TelemetryData(sn, 1L, 72.0, "BPM", LocalDateTime.now());
 
         ResponseEntity<Void> response = restTemplate.postForEntity("/telemetry", data, Void.class);
 

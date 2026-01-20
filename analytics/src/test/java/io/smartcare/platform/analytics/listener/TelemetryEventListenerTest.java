@@ -28,7 +28,7 @@ class TelemetryEventListenerTest {
     @Test
     void shouldSaveTelemetryRecordWhenUpdateReceived() {
         // Given
-        TelemetryData data = new TelemetryData("SN-1", 98.6, "F", LocalDateTime.now());
+        TelemetryData data = new TelemetryData("SN-1", 1L, 98.6, "F", LocalDateTime.now());
 
         // When
         telemetryEventListener.handleTelemetryUpdate(data);

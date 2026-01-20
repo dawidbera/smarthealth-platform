@@ -95,6 +95,7 @@ public abstract class ContractVerifierBase {
     public void triggerTelemetryUpdate() {
         TelemetryData data = new TelemetryData(
                 "SN-CONTRACT-001",
+                1L,
                 85.0,
                 "BPM",
                 LocalDateTime.parse("2026-01-18T10:00:00")

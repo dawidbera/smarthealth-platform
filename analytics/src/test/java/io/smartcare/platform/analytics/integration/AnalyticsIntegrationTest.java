@@ -45,7 +45,7 @@ class AnalyticsIntegrationTest {
     void shouldProcessTelemetryAndReturnStats() {
         // Given
         String serialNumber = "TEST-SN-IT";
-        TelemetryData data = new TelemetryData(serialNumber, 80.0, "BPM", LocalDateTime.now());
+        TelemetryData data = new TelemetryData(serialNumber, 1L, 80.0, "BPM", LocalDateTime.now());
 
         // When: Send telemetry event to RabbitMQ
         rabbitTemplate.convertAndSend("internal.exchange", "device.telemetry.update", data);
