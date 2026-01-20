@@ -1,7 +1,7 @@
 # SmartHealth Platform — Event‑Driven Microservices
 
 ## Architecture Overview
-The platform consists of 7 microservices communicating via asynchronous events (RabbitMQ) and synchronous REST calls (WebClient). Security is handled by Keycloak (OIDC). Monitoring is provided by Prometheus and Grafana.
+The platform consists of 7 microservices communicating via asynchronous events (RabbitMQ) and synchronous REST calls (WebClient with **Resilience4j**). Cloud capabilities (S3, SSM) are simulated locally using **LocalStack**. Security is handled by Keycloak (OIDC). Monitoring is provided by Prometheus and Grafana.
 
 ```mermaid
 flowchart TD
@@ -13,8 +13,10 @@ flowchart TD
   GW --> BILL[Billing Service]
   GW --> ANL[Analytics Service]
   
-  APP -- Sync --> PAT
+  APP -- Sync (Circuit Breaker) --> PAT
   DEV -- Cache --> R[(Redis)]
+  PAT -- Config --> AWS[(LocalStack SSM)]
+  BILL -- Upload --> S3[(LocalStack S3)]
   
   PAT -- Async --> MQ[(RabbitMQ)]
   APP -- Async --> MQ
@@ -37,8 +39,8 @@ flowchart TD
 
 ### 1. Build the project
 ```bash
-# Recommended: use verify to generate stubs for integration tests
-./mvnw clean verify
+# Recommended: use verify to generate stubs for integration tests (requires install for multi-module resolution)
+./mvnw clean install -DskipTests
 ```
 
 ### 2. Run the platform
@@ -48,6 +50,8 @@ docker compose up --build -d
 
 ## Tech Stack Highlights
 * **Backend**: Java 21, Spring Boot 3.4.x, Spring Cloud Contract
+* **Cloud**: AWS S3, AWS Parameter Store (via LocalStack)
+* **Resilience**: Resilience4j (Circuit Breakers)
 * **Frontend**: Angular 21, Bootstrap 5, Jest 30
 * **Messaging**: RabbitMQ (internal.exchange)
 * **Data**: PostgreSQL, Redis
@@ -60,6 +64,7 @@ docker compose up --build -d
 * **Zipkin**: http://localhost:9411 (Distributed Tracing)
 * **Prometheus**: http://localhost:9090
 * **RabbitMQ UI**: http://localhost:15672 (guest/guest)
+* **LocalStack**: http://localhost:4566
 
 ## Testing Telemetry & Analytics
 To simulate live health data and observe the anomaly detection system:

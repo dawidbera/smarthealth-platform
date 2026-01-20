@@ -4,11 +4,20 @@ server:
 spring:
   application:
     name: patient-service
+  config:
+    import: "optional:aws-parameterstore:/config/patient-service/"
+  cloud:
+    aws:
+      parameterstore:
+        endpoint: ${AWS_ENDPOINT:http://localhost:4566}
+        region: us-east-1
+      credentials:
+        access-key: test
+        secret-key: test
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:5432/patient_db
-    username: user
-    password: password
     driver-class-name: org.postgresql.Driver
+    # Username and Password loaded from AWS Parameter Store
   jpa:
     hibernate:
       ddl-auto: update

@@ -10,6 +10,7 @@ This document describes the technical setup of the SmartHealth Platform.
 | `sh-rabbitmq` | `rabbitmq:3.13-management` | 5672 | 5672 | 400MB | - |
 | `sh-redis` | `redis:7.2-alpine` | 6379 | 6379 | 100MB | - |
 | `sh-keycloak` | `keycloak:24.0.0` | 8080 | 8180 | 700MB | - |
+| `sh-localstack`| `localstack/localstack:3.4`| 4566 | 4566 | 512MB | - |
 | `sh-gateway` | `sh-api-gateway` | 8080 | 8080 | 512MB | 384m |
 | `sh-patient` | `sh-patient-service` | 8081 | 8081 | 256MB | 192m |
 | `sh-appointment`| `sh-appointment-service`| 8082 | 8082 | 256MB | 192m |
@@ -25,6 +26,15 @@ This document describes the technical setup of the SmartHealth Platform.
 ## Databases
 All databases are hosted on the `sh-postgres` instance:
 - `patient_db`, `appointment_db`, `billing_db`, `device_db`, `analytics_db`
+
+## AWS LocalStack
+The platform uses LocalStack to simulate AWS services locally:
+- **Endpoint**: `http://localhost:4566` (or `http://sh-localstack:4566` inside Docker)
+- **Services Enabled**: `S3`, `SSM` (Parameter Store)
+- **Initialization**: 
+  - Script: `infra/localstack/init-aws.sh`
+  - Creates Parameter Store secrets for `patient-service` (`spring.datasource.username/password`).
+  - S3 Buckets are created lazily by the application (`smarthealth-billing-invoices`).
 
 ## Messaging (RabbitMQ)
 Key Queues:
@@ -47,4 +57,4 @@ Keycloak automatically imports the `smarthealth` realm from `infra/keycloak/real
     - **H2 Database**: Used during Contract Tests to ensure CI independence.
     - **Testcontainers**: Used for full Integration Tests (PostgreSQL, RabbitMQ, Redis).
     - **Messaging Bridge**: Contract tests use a Spring Integration bridge to stub RabbitMQ interactions.
-    - **Stub Runner**: Configured in `CLASSPATH` mode to allow multi-module verification without local Maven installation.
+    - **Stub Runner**: Configured in `CLASSPATH` mode. NOTE: You must run `mvn install` locally for multi-module resolution to work correctly in tests.

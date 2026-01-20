@@ -19,7 +19,15 @@ spring:
     port: 5672
     username: guest
     password: guest
-
+  cloud:
+    aws:
+      s3:
+        endpoint: ${AWS_ENDPOINT:http://localhost:4566}
+        region: us-east-1
+        path-style-access-enabled: true
+      credentials:
+        access-key: test
+        secret-key: test
 
 management:
   endpoints:

@@ -10,8 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 
@@ -29,21 +27,7 @@ class AppointmentServiceTest {
     private RabbitTemplate rabbitTemplate;
 
     @Mock
-    private WebClient.Builder webClientBuilder;
-
-    @Mock
-    private WebClient webClient;
-
-    @Mock
-    @SuppressWarnings("rawtypes")
-    private WebClient.RequestHeadersUriSpec requestHeadersUriSpec;
-
-    @Mock
-    @SuppressWarnings("rawtypes")
-    private WebClient.RequestHeadersSpec requestHeadersSpec;
-
-    @Mock
-    private WebClient.ResponseSpec responseSpec;
+    private PatientServiceClient patientServiceClient;
 
     @InjectMocks
     private AppointmentService appointmentService;
@@ -59,15 +43,12 @@ class AppointmentServiceTest {
                 .appointmentTime(LocalDateTime.now())
                 .status(AppointmentStatus.REQUESTED)
                 .build();
-
-        // Mocking the fluent WebClient API
-        when(webClientBuilder.build()).thenReturn(webClient);
     }
 
     @Test
     void bookAppointment_ShouldSucceed_WhenPatientExists() {
         // Given
-        mockWebClientReturn(true);
+        when(patientServiceClient.checkPatientExistence(1L)).thenReturn(true);
         when(appointmentRepository.save(any(Appointment.class))).thenReturn(testAppointment);
 
         // When
@@ -83,7 +64,7 @@ class AppointmentServiceTest {
     @Test
     void bookAppointment_ShouldThrowException_WhenPatientDoesNotExist() {
         // Given
-        mockWebClientReturn(false);
+        when(patientServiceClient.checkPatientExistence(1L)).thenReturn(false);
 
         // When & Then
         assertThrows(IllegalArgumentException.class, () -> {
@@ -92,13 +73,5 @@ class AppointmentServiceTest {
 
         verify(appointmentRepository, never()).save(any(Appointment.class));
         verify(rabbitTemplate, never()).convertAndSend(anyString(), anyString(), anyString());
-    }
-
-    @SuppressWarnings("unchecked")
-    private void mockWebClientReturn(boolean exists) {
-        when(webClient.get()).thenReturn(requestHeadersUriSpec);
-        when(requestHeadersUriSpec.uri(anyString(), anyLong())).thenReturn(requestHeadersSpec);
-        when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
-        when(responseSpec.bodyToMono(Boolean.class)).thenReturn(Mono.just(exists));
     }
 }
