@@ -3,6 +3,7 @@ package io.smartcare.platform.analytics.listener;
 import io.smartcare.platform.analytics.domain.TelemetryRecord;
 import io.smartcare.platform.analytics.dto.TelemetryData;
 import io.smartcare.platform.analytics.repository.TelemetryRepository;
+import io.smartcare.platform.analytics.service.AnomalyDetectionService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -21,6 +22,9 @@ class TelemetryEventListenerTest {
 
     @Mock
     private TelemetryRepository telemetryRepository;
+
+    @Mock
+    private AnomalyDetectionService anomalyDetectionService;
 
     @InjectMocks
     private TelemetryEventListener telemetryEventListener;
