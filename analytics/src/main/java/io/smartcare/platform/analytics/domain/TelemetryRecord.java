@@ -18,6 +18,7 @@ public class TelemetryRecord {
     private Long id;
 
     private String serialNumber;
+    private Long patientId;
     private Double value;
     private String unit;
     private LocalDateTime timestamp;

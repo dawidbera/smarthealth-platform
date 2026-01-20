@@ -26,6 +26,13 @@ This document describes the technical setup of the SmartHealth Platform.
 All databases are hosted on the `sh-postgres` instance:
 - `patient_db`, `appointment_db`, `billing_db`, `device_db`, `analytics_db`
 
+## Messaging (RabbitMQ)
+Key Queues:
+- `q.patient.created`: Consumed by internal services.
+- `q.appointment.booked.notification`: Consumer for SMS/Email simulation.
+- `q.medical.alerts.notification`: Real-time anomaly alerts for medical staff.
+- `q.device.telemetry.analytics`: Data ingestion for historical records.
+
 ## Observability
 - **Prometheus**: Scrapes `/actuator/prometheus` from all services every 15s.
 - **Grafana**: Visualizes JVM metrics (Memory, CPU, GC, Threads). Pre-configured via provisioning.

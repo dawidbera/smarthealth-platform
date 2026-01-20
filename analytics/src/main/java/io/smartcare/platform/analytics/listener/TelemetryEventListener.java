@@ -17,13 +17,15 @@ import java.time.LocalDateTime;
 public class TelemetryEventListener {
 
     private final TelemetryRepository telemetryRepository;
+    private final io.smartcare.platform.analytics.service.AnomalyDetectionService anomalyDetectionService;
 
     @RabbitListener(queues = AnalyticsRabbitMQConfig.QUEUE_ANALYTICS)
     public void handleTelemetryUpdate(TelemetryData data) {
-        log.info("ANALYTICS RECEIVED: Data for device {}", data.serialNumber());
+        log.info("ANALYTICS RECEIVED: Data for device {} (Patient: {})", data.serialNumber(), data.patientId());
 
         TelemetryRecord record = TelemetryRecord.builder()
                 .serialNumber(data.serialNumber())
+                .patientId(data.patientId())
                 .value(data.value())
                 .unit(data.unit())
                 .timestamp(data.timestamp())
@@ -31,6 +33,8 @@ public class TelemetryEventListener {
                 .build();
 
         telemetryRepository.save(record);
-        log.debug("Telemetry record saved to analytics DB");
+        
+        // Analiza anomalii
+        anomalyDetectionService.analyze(data);
     }
 }

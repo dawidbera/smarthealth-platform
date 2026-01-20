@@ -62,13 +62,17 @@ docker compose up --build -d
 * **RabbitMQ UI**: http://localhost:15672 (guest/guest)
 
 ## Testing Telemetry & Analytics
-To simulate live health data and see history/trends on the dashboard:
+To simulate live health data and observe the anomaly detection system:
 1. Run the simulator script:
    ```bash
    ./infra/simulator.sh
    ```
-2. Open the **Dashboard** in your browser.
+2. The simulator now includes a **10% chance to trigger an anomaly** (heart rate > 120 BPM).
 3. Observe **Live Heart Rate** (Redis cache) and **Analytics & Trends** (PostgreSQL history).
+4. Watch `notification-service` logs for **Medical Alerts**:
+   ```bash
+   docker compose logs -f notification-service
+   ```
 
 ## Infrastructure Details
 * **Observability**: Each service exports metrics to Prometheus and traces to Zipkin. Grafana is pre-configured with JVM dashboards via provisioning.
