@@ -57,4 +57,5 @@ Keycloak automatically imports the `smarthealth` realm from `infra/keycloak/real
     - **H2 Database**: Used during Contract Tests to ensure CI independence.
     - **Testcontainers**: Used for full Integration Tests (PostgreSQL, RabbitMQ, Redis).
     - **Messaging Bridge**: Contract tests use a Spring Integration bridge to stub RabbitMQ interactions.
-    - **Stub Runner**: Configured in `CLASSPATH` mode. NOTE: You must run `mvn install` locally for multi-module resolution to work correctly in tests.
+    - **Stub Runner**: Configured in `CLASSPATH` mode. 
+      > **NOTE:** You must run `./mvnw clean install` or `./mvnw clean verify` locally to generate stubs. Running `./mvnw test` without this step will fail as dependent service stubs (e.g., patient-service) will be missing.

@@ -38,6 +38,9 @@ flowchart TD
 * Docker & Docker Compose V2
 
 ### 1. Build the project
+> **Important:** To run tests successfully, you MUST run `install` or `verify` first to generate necessary stubs.
+> Running `mvnw test` directly on a fresh clone will fail because dependent stubs won't exist yet.
+
 ```bash
 # Recommended: use verify to generate stubs for integration tests (requires install for multi-module resolution)
 ./mvnw clean install -DskipTests
