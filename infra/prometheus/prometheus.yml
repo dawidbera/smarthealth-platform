@@ -5,11 +5,24 @@ scrape_configs:
   - job_name: 'smarthealth-services'
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets:
-          - 'sh-gateway:8080'
-          - 'sh-patient:8081'
-          - 'sh-appointment:8082'
-          - 'sh-billing:8083'
-          - 'sh-notification:8084'
-          - 'sh-device:8085'
-          - 'sh-analytics:8086'
+      - targets: ['sh-gateway:8080']
+        labels:
+          application: 'api-gateway'
+      - targets: ['sh-patient:8081']
+        labels:
+          application: 'patient-service'
+      - targets: ['sh-appointment:8082']
+        labels:
+          application: 'appointment-service'
+      - targets: ['sh-billing:8083']
+        labels:
+          application: 'billing-service'
+      - targets: ['sh-notification:8084']
+        labels:
+          application: 'notification-service'
+      - targets: ['sh-device:8085']
+        labels:
+          application: 'device-service'
+      - targets: ['sh-analytics:8086']
+        labels:
+          application: 'analytics-service'

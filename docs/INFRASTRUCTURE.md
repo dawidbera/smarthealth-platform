@@ -46,6 +46,7 @@ Key Queues:
 ## Observability
 - **Prometheus**: Scrapes `/actuator/prometheus` from all services every 15s.
 - **Grafana**: Visualizes JVM metrics (Memory, CPU, GC, Threads). Pre-configured via provisioning.
+  - **Credentials**: `admin` / `admin`.
 - **Zipkin**: Collects and visualizes distributed traces (latency, error analysis).
 
 ## Security (OIDC)
