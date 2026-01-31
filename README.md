@@ -31,6 +31,14 @@ flowchart TD
   PROM --> GRAF[Grafana]
 ```
 
+## Screenshots
+
+### Patient Dashboard
+![Patient Dashboard](docs/images/dashboard-ui.png)
+
+### System Monitoring (Grafana)
+![Grafana Monitoring](docs/images/grafana-monitoring.png)
+
 ## Quick Start
 
 ### Prerequisites
@@ -62,7 +70,6 @@ docker compose up --build -d
 
 ### 3. Access
 * **Frontend UI**: http://localhost:4200 (Demo Mode: No login required)
-* **API Gateway**: http://localhost:8080
 * **Grafana**: http://localhost:3000 (Admin: admin/admin)
 * **Zipkin**: http://localhost:9411 (Distributed Tracing)
 * **Prometheus**: http://localhost:9090
