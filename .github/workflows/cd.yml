@@ -137,9 +137,9 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/${{ matrix.service.name }}
           tags: |
-            type=ref,event=branch  # Tag with branch name
-            type=sha,format=short  # Tag with short commit SHA
-            latest  # Tag with 'latest'
+            type=ref,event=branch
+            type=sha,format=short
+            latest
 
       # Build and push Docker image to GHCR
       - name: Build and push Docker image
@@ -151,4 +151,4 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}  # Apply tags
           labels: ${{ steps.meta.outputs.labels }}  # Apply labels
           build-args: |
-            JAR_FILE=${{ env.JAR_PATH }}  # Pass resolved JAR path to Dockerfile
+            JAR_FILE=${{ env.JAR_PATH }}
