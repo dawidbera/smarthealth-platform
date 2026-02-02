@@ -59,6 +59,7 @@ jobs:
       packages: write  # Permission to push to container registry
     strategy:
       fail-fast: false  # Continue even if one service fails
+      max-parallel: 2  # Limit concurrent jobs to avoid runner acquisition timeouts
       matrix:
         service:
           # Define all services to be containerized
