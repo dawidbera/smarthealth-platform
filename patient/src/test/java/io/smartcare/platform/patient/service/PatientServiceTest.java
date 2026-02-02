@@ -31,6 +31,9 @@ class PatientServiceTest {
 
     private Patient testPatient;
 
+    /**
+     * Initializes test data before each test execution.
+     */
     @BeforeEach
     void setUp() {
         testPatient = Patient.builder()
@@ -42,6 +45,9 @@ class PatientServiceTest {
                 .build();
     }
 
+    /**
+     * Tests that a patient is successfully registered when their national ID is unique.
+     */
     @Test
     void registerPatient_ShouldSucceed_WhenNationalIdIsUnique() {
         // Given
@@ -58,6 +64,9 @@ class PatientServiceTest {
         verify(rabbitTemplate).convertAndSend(eq(RabbitMQConfig.EXCHANGE), eq(RabbitMQConfig.ROUTING_KEY_PATIENT_CREATED), anyString());
     }
 
+    /**
+     * Tests that patient registration throws an exception when a patient with the same national ID already exists.
+     */
     @Test
     void registerPatient_ShouldThrowException_WhenNationalIdExists() {
         // Given

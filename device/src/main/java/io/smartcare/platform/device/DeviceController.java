@@ -20,6 +20,12 @@ public class DeviceController {
         this.redisTemplate = redisTemplate;
     }
 
+    /**
+     * Receives telemetry data from a device and triggers processing.
+     * 
+     * @param data the telemetry data to receive
+     * @return 200 OK
+     */
     @PostMapping("/telemetry")
     public ResponseEntity<Void> receiveTelemetry(@RequestBody TelemetryData data) {
         log.info("Received POST /telemetry for SN: {}", data.serialNumber());
@@ -27,6 +33,12 @@ public class DeviceController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Retrieves the most recent telemetry data for a specific device from the cache.
+     * 
+     * @param serialNumber the serial number of the device
+     * @return the latest telemetry data if found
+     */
     @GetMapping("/telemetry/{serialNumber}/latest")
     public ResponseEntity<Object> getLatestTelemetry(@PathVariable String serialNumber) {
         log.info("Received GET /telemetry/{}/latest", serialNumber);

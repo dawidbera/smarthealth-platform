@@ -18,11 +18,22 @@ public class AppointmentController {
     private final AppointmentService appointmentService;
     private final AppointmentRepository appointmentRepository;
 
+    /**
+     * Retrieves all booked appointments.
+     * 
+     * @return a list of all appointments
+     */
     @GetMapping
     public List<Appointment> getAllAppointments() {
         return appointmentRepository.findAll();
     }
 
+    /**
+     * Books a new appointment.
+     * 
+     * @param request the appointment booking request
+     * @return the created appointment with status 201 Created
+     */
     @PostMapping
     public ResponseEntity<Appointment> bookAppointment(@RequestBody BookAppointmentRequest request) {
         Appointment appointment = Appointment.builder()

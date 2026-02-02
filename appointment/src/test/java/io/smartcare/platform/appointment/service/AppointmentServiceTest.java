@@ -34,6 +34,9 @@ class AppointmentServiceTest {
 
     private Appointment testAppointment;
 
+    /**
+     * Initializes test data before each test execution.
+     */
     @BeforeEach
     void setUp() {
         testAppointment = Appointment.builder()
@@ -45,6 +48,9 @@ class AppointmentServiceTest {
                 .build();
     }
 
+    /**
+     * Tests that an appointment is successfully booked when the patient exists.
+     */
     @Test
     void bookAppointment_ShouldSucceed_WhenPatientExists() {
         // Given
@@ -61,6 +67,9 @@ class AppointmentServiceTest {
         verify(rabbitTemplate).convertAndSend(eq("internal.exchange"), eq("appointment.booked"), anyString());
     }
 
+    /**
+     * Tests that booking an appointment throws an exception when the patient does not exist.
+     */
     @Test
     void bookAppointment_ShouldThrowException_WhenPatientDoesNotExist() {
         // Given

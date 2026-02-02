@@ -18,6 +18,13 @@ public class AppointmentService {
     private final RabbitTemplate rabbitTemplate;
     private final PatientServiceClient patientServiceClient;
 
+    /**
+     * Books a new appointment for a patient.
+     * 
+     * @param appointment the appointment details to be booked
+     * @return the saved appointment with status BOOKED
+     * @throws IllegalArgumentException if the patient does not exist
+     */
     @Transactional
     public Appointment bookAppointment(Appointment appointment) {
         log.info("Checking patient existence for ID: {}", appointment.getPatientId());

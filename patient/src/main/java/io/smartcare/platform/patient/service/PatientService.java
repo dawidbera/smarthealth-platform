@@ -17,6 +17,13 @@ public class PatientService {
     private final PatientRepository patientRepository;
     private final RabbitTemplate rabbitTemplate;
 
+    /**
+     * Registers a new patient in the system.
+     * 
+     * @param patient the patient information to register
+     * @return the saved patient entity
+     * @throws IllegalArgumentException if a patient with the same national ID already exists
+     */
     @Transactional
     public Patient registerPatient(Patient patient) {
         log.info("Registering patient: {} {}", patient.getFirstName(), patient.getLastName());

@@ -28,6 +28,9 @@ class AnalyticsControllerTest {
     @MockBean
     private TelemetryRepository telemetryRepository;
 
+    /**
+     * Tests that device statistics are correctly calculated when telemetry records exist.
+     */
     @Test
     void getDeviceStats_ShouldCalculateCorrectly() throws Exception {
         TelemetryRecord r1 = TelemetryRecord.builder().value(80.0).build();
@@ -44,6 +47,9 @@ class AnalyticsControllerTest {
                 .andExpect(jsonPath("$.status").value("Normal"));
     }
 
+    /**
+     * Tests that device statistics are handled correctly when no telemetry records are found.
+     */
     @Test
     void getDeviceStats_ShouldHandleEmptyData() throws Exception {
         when(telemetryRepository.findBySerialNumber(eq("SN-EMPTY"), any(PageRequest.class)))

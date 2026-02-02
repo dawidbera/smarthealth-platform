@@ -1,16 +1,23 @@
+# --- Server Configuration ---
 server:
   port: 8080
 
+# --- Spring Core Configuration ---
 spring:
   application:
     name: api-gateway
+  
+  # --- Security Configuration (OAuth2 / Keycloak) ---
   security:
     oauth2:
       resourceserver:
         jwt:
           issuer-uri: http://localhost:8180/realms/smarthealth
+  
+  # --- API Gateway Configuration ---
   cloud:
     gateway:
+      # CORS Settings
       globalcors:
         cors-configurations:
           '[/**]':
@@ -22,6 +29,8 @@ spring:
               - DELETE
               - OPTIONS
             allowedHeaders: "*"
+      
+      # Routing Rules
       routes:
         - id: analytics-service
           uri: ${ANALYTICS_SERVICE_URL:http://localhost:8086}
@@ -46,6 +55,7 @@ spring:
           filters:
             - RewritePath=/device/(?<segment>.*),/$\{segment}
 
+# --- Actuator & Monitoring Configuration ---
 management:
   endpoints:
     web:
@@ -56,6 +66,8 @@ management:
       show-details: always
     prometheus:
       enabled: true
+  
+  # --- Distributed Tracing (Zipkin) ---
   tracing:
     sampling:
       probability: 1.0

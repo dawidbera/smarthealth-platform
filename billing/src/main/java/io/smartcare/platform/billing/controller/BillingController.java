@@ -16,6 +16,11 @@ public class BillingController {
 
     private final InvoiceRepository invoiceRepository;
 
+    /**
+     * Retrieves all invoices from the system.
+     * 
+     * @return a list of all existing invoices
+     */
     @GetMapping("/invoices")
     public List<Invoice> getAllInvoices() {
         return invoiceRepository.findAll();

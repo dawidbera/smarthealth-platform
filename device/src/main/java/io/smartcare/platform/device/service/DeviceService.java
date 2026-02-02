@@ -20,6 +20,12 @@ public class DeviceService {
         this.rabbitTemplate = rabbitTemplate;
     }
 
+    /**
+     * Processes incoming telemetry data from a device.
+     * Caches the latest data in Redis and publishes an event to RabbitMQ.
+     * 
+     * @param data the telemetry data to process
+     */
     public void processTelemetry(TelemetryData data) {
         log.info("Processing telemetry from device {}: {} {}", 
             data.serialNumber(), data.value(), data.unit());

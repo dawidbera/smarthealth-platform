@@ -17,6 +17,13 @@ public class PatientServiceClient {
     @Value("${services.patient-service.url}")
     private String patientServiceUrl;
 
+    /**
+     * Checks if a patient exists by calling the Patient microservice.
+     * Wrapped with a Circuit Breaker to handle service unavailability.
+     * 
+     * @param patientId the ID of the patient to check
+     * @return true if the patient exists, or based on fallback logic if service is unavailable
+     */
     @CircuitBreaker(name = "patientService", fallbackMethod = "fallbackCheckPatientExistence")
     public boolean checkPatientExistence(Long patientId) {
         Boolean result = webClientBuilder.build()
@@ -28,6 +35,13 @@ public class PatientServiceClient {
         return Boolean.TRUE.equals(result);
     }
 
+    /**
+     * Fallback method for patient existence check when the Patient Service is unavailable.
+     * 
+     * @param patientId the ID of the patient
+     * @param t the exception that triggered the fallback
+     * @return true as a default fallback strategy for this demo
+     */
     public boolean fallbackCheckPatientExistence(Long patientId, Throwable t) {
         log.warn("Patient Service is down or returning error. Circuit Breaker fallback triggered for ID: {}. Error: {}", patientId, t.getMessage());
         // Fallback strategy: Assume patient exists to allow booking (or fail gracefully depending on business logic).

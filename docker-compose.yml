@@ -1,4 +1,5 @@
 services:
+  # --- Infrastructure Services ---
   postgres:
     image: postgres:16-alpine
     container_name: sh-postgres
@@ -22,7 +23,7 @@ services:
     restart: on-failure
     ports:
       - "5672:5672"
-      - "15672:15672"
+      - "15672:15672" # Management UI
     deploy:
       resources:
         limits:
@@ -56,7 +57,7 @@ services:
         limits:
           memory: 700M
 
-  # Aplikacje
+  # --- Application Services ---
   api-gateway:
     build:
       context: .
@@ -232,6 +233,7 @@ services:
         limits:
           memory: 256M
 
+  # --- Monitoring & Observability ---
   prometheus:
     image: prom/prometheus:latest
     container_name: sh-prometheus
@@ -272,6 +274,7 @@ services:
         limits:
           memory: 256M
 
+  # --- Local Cloud Simulation ---
   localstack:
     image: localstack/localstack:3.4
     container_name: sh-localstack
@@ -287,6 +290,7 @@ services:
         limits:
           memory: 512M
 
+  # --- Frontend ---
   web-ui:
     build:
       context: .

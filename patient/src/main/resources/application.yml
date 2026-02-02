@@ -1,11 +1,15 @@
+# --- Server Configuration ---
 server:
   port: 8081
 
+# --- Spring Core Configuration ---
 spring:
   application:
     name: patient-service
   config:
     import: "optional:aws-parameterstore:/config/patient-service/"
+  
+  # --- AWS Configuration (Parameter Store) ---
   cloud:
     aws:
       parameterstore:
@@ -14,10 +18,14 @@ spring:
       credentials:
         access-key: test
         secret-key: test
+
+  # --- Database Configuration ---
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:5432/patient_db
     driver-class-name: org.postgresql.Driver
     # Username and Password loaded from AWS Parameter Store
+  
+  # --- JPA/Hibernate Configuration ---
   jpa:
     hibernate:
       ddl-auto: update
@@ -26,11 +34,14 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+  # --- Message Broker Configuration ---
   rabbitmq:
     host: ${MQ_HOST:localhost}
     port: 5672
 
 
+# --- Actuator & Monitoring Configuration ---
 management:
   endpoints:
     web:
@@ -41,6 +52,8 @@ management:
       show-details: always
     prometheus:
       enabled: true
+  
+  # --- Distributed Tracing (Zipkin) ---
   tracing:
     sampling:
       probability: 1.0

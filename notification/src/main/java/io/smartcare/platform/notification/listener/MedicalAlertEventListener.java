@@ -10,6 +10,11 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class MedicalAlertEventListener {
 
+    /**
+     * Listens for critical medical alert events and simulates a notification to medical staff.
+     * 
+     * @param alert the medical alert details
+     */
     @RabbitListener(queues = NotificationRabbitMQConfig.QUEUE_MEDICAL_ALERTS)
     public void handleMedicalAlert(MedicalAlert alert) {
         log.error("🛑 MEDICAL ALERT RECEIVED for patient {}: {}", alert.patientId(), alert.message());

@@ -19,6 +19,12 @@ public class TelemetryEventListener {
     private final TelemetryRepository telemetryRepository;
     private final io.smartcare.platform.analytics.service.AnomalyDetectionService anomalyDetectionService;
 
+    /**
+     * Listens for telemetry update events and persists them to the repository.
+     * Also triggers anomaly detection for the received data.
+     * 
+     * @param data the telemetry data received from the message queue
+     */
     @RabbitListener(queues = AnalyticsRabbitMQConfig.QUEUE_ANALYTICS)
     public void handleTelemetryUpdate(TelemetryData data) {
         log.info("ANALYTICS RECEIVED: Data for device {} (Patient: {})", data.serialNumber(), data.patientId());

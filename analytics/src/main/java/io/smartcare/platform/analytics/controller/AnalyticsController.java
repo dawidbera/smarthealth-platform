@@ -20,6 +20,13 @@ public class AnalyticsController {
 
     private final TelemetryRepository telemetryRepository;
 
+    /**
+     * Retrieves the telemetry history for a specific device.
+     * 
+     * @param serialNumber the serial number of the device
+     * @param limit the maximum number of records to return (defaults to 10)
+     * @return a list of telemetry records sorted by timestamp descending
+     */
     @GetMapping("/device/{serialNumber}/history")
     public List<TelemetryRecord> getDeviceHistory(
             @PathVariable String serialNumber,
@@ -36,6 +43,12 @@ public class AnalyticsController {
         }
     }
 
+    /**
+     * Calculates and retrieves statistics for a specific device based on recent telemetry.
+     * 
+     * @param serialNumber the serial number of the device
+     * @return a map containing average value, maximum value, record count, and health status
+     */
     @GetMapping("/device/{serialNumber}/stats")
     public Map<String, Object> getDeviceStats(@PathVariable String serialNumber) {
         log.info("Fetching stats for device: {}", serialNumber);

@@ -19,6 +19,12 @@ public class S3Service {
     @Value("${application.bucket.name:smarthealth-billing-invoices}")
     private String bucketName;
 
+    /**
+     * Uploads an invoice document to AWS S3.
+     * 
+     * @param appointmentId the ID of the appointment associated with the invoice
+     * @param content the content of the invoice to be uploaded
+     */
     public void uploadInvoice(Long appointmentId, String content) {
         String key = "invoices/invoice-" + appointmentId + ".txt";
         

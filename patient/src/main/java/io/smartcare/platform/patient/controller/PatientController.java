@@ -20,11 +20,22 @@ public class PatientController {
     private final PatientService patientService;
     private final PatientRepository patientRepository;
 
+    /**
+     * Retrieves all registered patients.
+     * 
+     * @return a list of all patients
+     */
     @GetMapping
     public List<Patient> getAllPatients() {
         return patientRepository.findAll();
     }
 
+    /**
+     * Registers a new patient.
+     * 
+     * @param request the patient registration request data
+     * @return the created patient with status 201 Created
+     */
     @PostMapping
     public ResponseEntity<Patient> createPatient(@RequestBody CreatePatientRequest request) {
         Patient patient = Patient.builder()
@@ -38,6 +49,12 @@ public class PatientController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedPatient);
     }
 
+    /**
+     * Checks if a patient exists by their ID.
+     * 
+     * @param id the ID of the patient to check
+     * @return true if the patient exists, false otherwise
+     */
     @GetMapping("/{id}/exists")
     public boolean exists(@PathVariable Long id) {
         return patientRepository.existsById(id);

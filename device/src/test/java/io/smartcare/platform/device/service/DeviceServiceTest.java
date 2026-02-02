@@ -36,12 +36,18 @@ class DeviceServiceTest {
     @InjectMocks
     private DeviceService deviceService;
 
+    /**
+     * Initializes test mocks before each test execution.
+     */
     @BeforeEach
     void setUp() {
         // RedisTemplate requires mocking its operations
         when(redisTemplate.opsForValue()).thenReturn(valueOperations);
     }
 
+    /**
+     * Tests that telemetry data is correctly processed, cached in Redis, and published to RabbitMQ.
+     */
     @Test
     void shouldProcessTelemetryCorrectly() {
         // Given

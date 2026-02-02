@@ -20,6 +20,12 @@ public class AppointmentEventListener {
     private final InvoiceRepository invoiceRepository;
     private final S3Service s3Service;
 
+    /**
+     * Listens for appointment booking events and creates a corresponding invoice.
+     * Also generates and uploads an invoice document to S3.
+     * 
+     * @param message the raw message from the queue containing the appointment ID
+     */
     @RabbitListener(queues = BillingRabbitMQConfig.QUEUE_BILLING)
     public void handleAppointmentBooked(String message) {
         log.info("BILLING RECEIVED: Received message: {}", message);
@@ -48,6 +54,12 @@ public class AppointmentEventListener {
         }
     }
 
+    /**
+     * Generates a plain text representation of an invoice for storage.
+     * 
+     * @param invoice the invoice data to format
+     * @return a formatted string containing invoice details
+     */
     private String generateInvoiceContent(Invoice invoice) {
         return "INVOICE\n" +
                "-------\n" +
