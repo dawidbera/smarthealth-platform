@@ -106,6 +106,22 @@ jobs:
           name: jars
           path: .
 
+      # Resolve JAR glob to a concrete filename and expose as env var
+      - name: Resolve JAR path
+        if: matrix.service.name != 'web-ui'
+        id: resolve-jar
+        run: |
+          set -e
+          echo "Looking for files: ${{ matrix.service.jar_path }}"
+          # Pick the main JAR (not stubs, not original)
+          JAR=$(ls ${{ matrix.service.jar_path }} 2>/dev/null | grep -v "stubs" | grep -v "original" | head -n1 || true)
+          if [ -z "$JAR" ]; then
+            echo "No JAR found for pattern: ${{ matrix.service.jar_path }}"
+            exit 1
+          fi
+          echo "Found JAR: $JAR"
+          echo "JAR_PATH=$JAR" >> $GITHUB_ENV
+
       # Authenticate to GitHub Container Registry
       - name: Log in to the Container registry
         uses: docker/login-action@v3
@@ -135,4 +151,4 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}  # Apply tags
           labels: ${{ steps.meta.outputs.labels }}  # Apply labels
           build-args: |
-            JAR_FILE=${{ matrix.service.jar_path }}  # Pass JAR path to Dockerfile
+            JAR_FILE=${{ env.JAR_PATH }}  # Pass resolved JAR path to Dockerfile
