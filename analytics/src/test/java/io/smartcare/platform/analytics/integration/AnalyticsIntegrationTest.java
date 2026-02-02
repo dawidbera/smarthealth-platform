@@ -20,6 +20,11 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
+/**
+ * Integration tests for the Analytics Service.
+ * Tests the complete flow from telemetry reception via RabbitMQ to statistics calculation via REST API.
+ * Uses Testcontainers for PostgreSQL and RabbitMQ, with a live application context.
+ */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
 class AnalyticsIntegrationTest {
@@ -41,6 +46,10 @@ class AnalyticsIntegrationTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
+    /**
+     * Integration test: Verifies complete telemetry flow from RabbitMQ to statistics API.
+     * Sends telemetry via RabbitMQ, waits for persistence, then queries stats endpoint.
+     */
     @Test
     void shouldProcessTelemetryAndReturnStats() {
         // Given

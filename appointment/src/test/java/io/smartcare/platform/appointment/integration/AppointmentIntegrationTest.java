@@ -28,6 +28,12 @@ import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * Integration tests for the Appointment Service with Contract Testing.
+ * Tests end-to-end appointment booking flow including synchronous calls to patient service stubs.
+ * Uses Testcontainers for PostgreSQL and RabbitMQ.
+ * Uses Spring Cloud Contract Stub Runner to mock patient-service responses for contract compliance.
+ */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
 @AutoConfigureStubRunner(
@@ -68,6 +74,10 @@ class AppointmentIntegrationTest {
         amqpAdmin.declareExchange(new TopicExchange("internal.exchange"));
     }
 
+    /**
+     * Integration test: Verifies complete appointment booking with contract testing.
+     * Books an appointment using patient service stub and verifies the event is published to RabbitMQ.
+     */
     @Test
     void shouldBookAppointmentAndPublishEvent() {
         // The stub for patient-service is automatically running on port 8090

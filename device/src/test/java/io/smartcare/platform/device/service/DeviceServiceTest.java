@@ -18,6 +18,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
+/**
+ * Unit tests for the Device Service.
+ * Tests telemetry data processing including caching to Redis and publishing to RabbitMQ.
+ * Uses Mockito to mock external dependencies (database, Redis, RabbitMQ).
+ */
 @ExtendWith(MockitoExtension.class)
 class DeviceServiceTest {
 

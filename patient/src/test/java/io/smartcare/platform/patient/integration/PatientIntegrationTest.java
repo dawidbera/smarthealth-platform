@@ -16,6 +16,11 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * Integration tests for the Patient Service.
+ * Tests end-to-end patient registration and retrieval flows.
+ * Uses Testcontainers for PostgreSQL and RabbitMQ with a live application context.
+ */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
 class PatientIntegrationTest {
@@ -34,6 +39,10 @@ class PatientIntegrationTest {
     @Autowired
     private PatientRepository patientRepository;
 
+    /**
+     * Integration test: Verifies complete patient registration flow from API to database.
+     * Creates a patient via POST endpoint and verifies it's persisted in PostgreSQL.
+     */
     @Test
     void shouldRegisterAndRetrievePatient() {
         // Given

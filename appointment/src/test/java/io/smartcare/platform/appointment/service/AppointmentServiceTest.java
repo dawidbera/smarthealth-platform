@@ -17,6 +17,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * Unit tests for the Appointment Service business logic.
+ * Tests appointment booking including patient validation and event publishing.
+ * Uses Mockito to mock external service calls and repositories.
+ */
 @ExtendWith(MockitoExtension.class)
 class AppointmentServiceTest {
 

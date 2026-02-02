@@ -1,19 +1,29 @@
+# Analytics Service Application Configuration
+# Processes telemetry data and provides analytics & anomaly detection
+
+# Server Configuration
 server:
-  port: 8086
+  port: 8086  # API endpoint port for the analytics service
 
 spring:
   application:
-    name: analytics-service
+    name: analytics-service  # Service identifier
+  
+  # Database (PostgreSQL) Configuration - stores historical telemetry data
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5436}/analytics_db
     username: user
     password: password
     driver-class-name: org.postgresql.Driver
+  
+  # JPA/Hibernate ORM Configuration
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: update  # Auto-create/update schema
     show-sql: true
     open-in-view: false
+  
+  # RabbitMQ Message Broker Configuration - listens for telemetry events
   rabbitmq:
     host: ${MQ_HOST:localhost}
     port: 5672
@@ -21,19 +31,20 @@ spring:
     password: guest
 
 
+# Actuator & Monitoring Configuration
 management:
   endpoints:
     web:
       exposure:
-        include: health,prometheus,metrics
+        include: health,prometheus,metrics  # Expose metrics endpoints
   endpoint:
     health:
       show-details: always
     prometheus:
-      enabled: true
+      enabled: true  # Enable Prometheus metrics export
   tracing:
     sampling:
-      probability: 1.0
+      probability: 1.0  # Trace 100% of requests
   zipkin:
     tracing:
       endpoint: ${ZIPKIN_ENDPOINT:http://localhost:9411/api/v2/spans}

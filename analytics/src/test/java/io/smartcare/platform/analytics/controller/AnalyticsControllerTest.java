@@ -19,6 +19,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Unit tests for the Analytics Controller.
+ * Tests device statistics endpoints including calculations for average, max, and anomaly detection.
+ * Uses MockMvc to test REST endpoints without loading the full Spring context.
+ */
 @WebMvcTest(AnalyticsController.class)
 class AnalyticsControllerTest {
 
@@ -47,6 +52,9 @@ class AnalyticsControllerTest {
                 .andExpect(jsonPath("$.status").value("Normal"));
     }
 
+    /**
+     * Tests that device statistics are handled correctly when no telemetry records are found.
+     */
     /**
      * Tests that device statistics are handled correctly when no telemetry records are found.
      */

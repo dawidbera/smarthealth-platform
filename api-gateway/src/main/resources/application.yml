@@ -1,61 +1,74 @@
-# --- Server Configuration ---
-server:
-  port: 8080
+# API Gateway Application Configuration
+# Central entry point for all microservices, handles routing and cross-cutting concerns
 
-# --- Spring Core Configuration ---
+# Server Configuration
+server:
+  port: 8080  # Main API gateway port
+
+# Spring Boot Configuration
 spring:
   application:
-    name: api-gateway
+    name: api-gateway  # Service identifier
   
-  # --- Security Configuration (OAuth2 / Keycloak) ---
+  # Security Configuration (OAuth2 / Keycloak for authentication)
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8180/realms/smarthealth
+          issuer-uri: http://localhost:8180/realms/smarthealth  # Keycloak realm
   
-  # --- API Gateway Configuration ---
+  # API Gateway Configuration
   cloud:
     gateway:
-      # CORS Settings
+      # CORS (Cross-Origin Resource Sharing) Settings
       globalcors:
         cors-configurations:
           '[/**]':
-            allowedOrigins: "http://localhost:4200"
+            allowedOrigins: "http://localhost:4200"  # Allow Angular frontend
             allowedMethods:
               - GET
               - POST
               - PUT
               - DELETE
               - OPTIONS
-            allowedHeaders: "*"
+            allowedHeaders: "*"  # Allow all headers
       
-      # Routing Rules
+      # Routing Rules - Define how requests are routed to microservices
       routes:
+        # Analytics Service Route
         - id: analytics-service
           uri: ${ANALYTICS_SERVICE_URL:http://localhost:8086}
           predicates:
-            - Path=/analytics/**
+            - Path=/analytics/**  # Route /analytics/** to analytics service
+        
+        # Patient Service Route
         - id: patient-service
           uri: ${PATIENT_SERVICE_URL:http://localhost:8081}
           predicates:
             - Path=/patient/**
+        
+        # Appointment Service Route
         - id: appointment-service
           uri: ${APPOINTMENT_SERVICE_URL:http://localhost:8082}
           predicates:
             - Path=/appointment/**
+        
+        # Billing Service Route
         - id: billing-service
           uri: ${BILLING_SERVICE_URL:http://localhost:8083}
           predicates:
             - Path=/billing/**
+        
+        # Device Service Route (with path rewriting)
         - id: device-service
           uri: ${DEVICE_SERVICE_URL:http://localhost:8085}
           predicates:
             - Path=/device/**
           filters:
-            - RewritePath=/device/(?<segment>.*),/$\{segment}
+            - RewritePath=/device/(?<segment>.*),/$\{segment}  # Remove /device prefix
 
-# --- Actuator & Monitoring Configuration ---
+# Actuator & Monitoring Configuration
+# Exposes metrics and health check endpoints
 management:
   endpoints:
     web:
@@ -67,10 +80,10 @@ management:
     prometheus:
       enabled: true
   
-  # --- Distributed Tracing (Zipkin) ---
+  # Distributed Tracing Configuration (Zipkin)
   tracing:
     sampling:
-      probability: 1.0
+      probability: 1.0  # Trace 100% of requests
   zipkin:
     tracing:
       endpoint: ${ZIPKIN_ENDPOINT:http://localhost:9411/api/v2/spans}

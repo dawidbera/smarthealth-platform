@@ -14,6 +14,11 @@ import java.math.BigDecimal;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 
+/**
+ * Unit tests for the Appointment Event Listener in the Billing Service.
+ * Tests that appointment booking messages are correctly processed and invoices are created.
+ * Uses Mockito to mock the repository layer.
+ */
 @ExtendWith(MockitoExtension.class)
 class AppointmentEventListenerTest {
 
@@ -23,6 +28,11 @@ class AppointmentEventListenerTest {
     @InjectMocks
     private AppointmentEventListener appointmentEventListener;
 
+    /**
+     * Tests that when an appointment booked message is received,
+     * a new invoice is created with the correct appointment ID, amount, and status.
+     * Verifies the invoice is saved to the repository using ArgumentCaptor.
+     */
     @Test
     void shouldCreateInvoiceWhenAppointmentBookedMessageReceived() {
         // Given

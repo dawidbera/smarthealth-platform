@@ -1,5 +1,8 @@
 services:
-  # --- Infrastructure Services ---
+  # ========== INFRASTRUCTURE SERVICES ==========
+  # Core infrastructure services required by the platform
+  
+  # PostgreSQL Database - Shared database for all microservices
   postgres:
     image: postgres:16-alpine
     container_name: sh-postgres
@@ -10,25 +13,27 @@ services:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
     volumes:
-      - ./init-postgres.sql:/docker-entrypoint-initdb.d/init-postgres.sql
+      - ./init-postgres.sql:/docker-entrypoint-initdb.d/init-postgres.sql  # Initialize schemas
       - postgres_data:/var/lib/postgresql/data
     deploy:
       resources:
         limits:
           memory: 300M
 
+  # RabbitMQ Message Broker - Asynchronous event messaging
   rabbitmq:
     image: rabbitmq:3.13-management-alpine
     container_name: sh-rabbitmq
     restart: on-failure
     ports:
-      - "5672:5672"
-      - "15672:15672" # Management UI
+      - "5672:5672"  # AMQP protocol port
+      - "15672:15672"  # Management UI port (guest/guest)
     deploy:
       resources:
         limits:
           memory: 400M
 
+  # Redis Cache - Stores latest telemetry data and session data
   redis:
     image: redis:7.2-alpine
     container_name: sh-redis
@@ -40,10 +45,11 @@ services:
         limits:
           memory: 100M
 
+  # Keycloak - OAuth2/OIDC Identity Provider (optional, not enforced in demo mode)
   keycloak:
     image: quay.io/keycloak/keycloak:24.0.0
     container_name: sh-keycloak
-    command: start-dev --import-realm
+    command: start-dev --import-realm  # Development mode with realm import
     restart: on-failure
     ports:
       - "8180:8080"
@@ -57,7 +63,10 @@ services:
         limits:
           memory: 700M
 
-  # --- Application Services ---
+  # ========== MICROSERVICES ==========
+  # Core application microservices
+  
+  # API Gateway - Entry point for all client requests
   api-gateway:
     build:
       context: .
@@ -84,6 +93,7 @@ services:
         limits:
           memory: 512M
 
+  # Patient Service - Manages patient registration and profiles
   patient-service:
     build:
       context: .
@@ -96,7 +106,7 @@ services:
       - "8081:8081"
     depends_on:
       - postgres
-      - localstack
+      - localstack  # For AWS Parameter Store (credentials)
     environment:
       - DB_HOST=sh-postgres
       - DB_PORT=5432
@@ -110,6 +120,7 @@ services:
         limits:
           memory: 256M
 
+  # Appointment Service - Handles appointment scheduling (with circuit breaker to patient service)
   appointment-service:
     build:
       context: .
@@ -135,6 +146,7 @@ services:
         limits:
           memory: 256M
 
+  # Billing Service - Processes invoices and payments
   billing-service:
     build:
       context: .
@@ -147,7 +159,7 @@ services:
       - "8083:8083"
     depends_on:
       - postgres
-      - localstack
+      - localstack  # For S3 bucket uploads
     environment:
       - DB_HOST=sh-postgres
       - DB_PORT=5432
@@ -161,6 +173,7 @@ services:
         limits:
           memory: 256M
 
+  # Notification Service - Sends notifications based on domain events
   notification-service:
     build:
       context: .
@@ -183,6 +196,7 @@ services:
         limits:
           memory: 300M
 
+  # Device Service - Collects and manages telemetry data from medical devices
   device-service:
     build:
       context: .
@@ -194,7 +208,7 @@ services:
     ports:
       - "8085:8085"
     depends_on:
-      - redis
+      - redis  # Caches latest telemetry
       - postgres
     environment:
       - DB_HOST=sh-postgres
@@ -209,6 +223,7 @@ services:
         limits:
           memory: 256M
 
+  # Analytics Service - Processes telemetry data and detects anomalies
   analytics-service:
     build:
       context: .
@@ -233,13 +248,16 @@ services:
         limits:
           memory: 256M
 
-  # --- Monitoring & Observability ---
+  # ========== MONITORING & OBSERVABILITY ==========
+  # Services for metrics collection and visualization
+  
+  # Prometheus - Metrics collection and storage
   prometheus:
     image: prom/prometheus:latest
     container_name: sh-prometheus
     restart: on-failure
     volumes:
-      - ./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml  # Scrape configuration
     ports:
       - "9090:9090"
     deploy:
@@ -247,15 +265,16 @@ services:
         limits:
           memory: 256M
 
+  # Grafana - Dashboard and visualization for Prometheus metrics
   grafana:
     image: grafana/grafana:latest
     container_name: sh-grafana
     ports:
-      - "3000:3000"
+      - "3000:3000"  # Web UI (admin/admin)
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
     volumes:
-      - ./infra/grafana/provisioning:/etc/grafana/provisioning
+      - ./infra/grafana/provisioning:/etc/grafana/provisioning  # Auto-provision dashboards & datasources
     depends_on:
       - prometheus
     deploy:
@@ -263,34 +282,38 @@ services:
         limits:
           memory: 256M
 
+  # Zipkin - Distributed tracing for request tracking across services
   zipkin:
     image: openzipkin/zipkin:latest
     container_name: sh-zipkin
     restart: on-failure
     ports:
-      - "9411:9411"
+      - "9411:9411"  # Web UI
     deploy:
       resources:
         limits:
           memory: 256M
 
-  # --- Local Cloud Simulation ---
+  # ========== LOCAL CLOUD SIMULATION ==========
+  # LocalStack - Simulates AWS services (S3, SSM) locally
   localstack:
     image: localstack/localstack:3.4
     container_name: sh-localstack
     restart: on-failure
     ports:
-      - "4566:4566"
+      - "4566:4566"  # LocalStack Edge endpoint
     environment:
-      - SERVICES=s3,ssm
+      - SERVICES=s3,ssm  # S3 for file storage, SSM for configuration
     volumes:
-      - ./infra/localstack/init-aws.sh:/etc/localstack/init/ready.d/init-aws.sh
+      - ./infra/localstack/init-aws.sh:/etc/localstack/init/ready.d/init-aws.sh  # Initialize AWS resources
     deploy:
       resources:
         limits:
           memory: 512M
 
-  # --- Frontend ---
+  # ========== FRONTEND ==========
+  # Angular web UI for the platform
+  
   web-ui:
     build:
       context: .

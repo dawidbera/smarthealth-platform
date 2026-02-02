@@ -17,6 +17,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.verify;
 
+/**
+ * Unit tests for the Telemetry Event Listener in the Analytics Service.
+ * Tests processing of telemetry data from RabbitMQ messages and storage in the database.
+ * Verifies anomaly detection service integration.
+ */
 @ExtendWith(MockitoExtension.class)
 class TelemetryEventListenerTest {
 
@@ -29,6 +34,10 @@ class TelemetryEventListenerTest {
     @InjectMocks
     private TelemetryEventListener telemetryEventListener;
 
+    /**
+     * Tests that telemetry data received from RabbitMQ is saved to the database.
+     * Verifies the saved record has correct values and timestamp.
+     */
     @Test
     void shouldSaveTelemetryRecordWhenUpdateReceived() {
         // Given

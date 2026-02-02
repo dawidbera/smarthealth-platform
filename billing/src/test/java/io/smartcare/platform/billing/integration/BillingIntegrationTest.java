@@ -17,6 +17,11 @@ import java.time.Duration;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
+/**
+ * Integration tests for the Billing Service.
+ * Tests the complete flow from RabbitMQ message ingestion to database persistence.
+ * Uses Testcontainers to spin up PostgreSQL and RabbitMQ containers for isolated testing.
+ */
 @SpringBootTest
 @Testcontainers
 class BillingIntegrationTest {
@@ -35,6 +40,11 @@ class BillingIntegrationTest {
     @Autowired
     private InvoiceRepository invoiceRepository;
 
+    /**
+     * Integration test: Verifies end-to-end invoice creation via RabbitMQ messaging.
+     * Sends a message to RabbitMQ and waits for the listener to process and save to database.
+     * Uses Awaitility to handle asynchronous message processing.
+     */
     @Test
     void shouldCreateInvoiceWhenAppointmentBookedEventReceived() {
         // Given

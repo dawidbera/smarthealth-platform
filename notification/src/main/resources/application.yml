@@ -1,9 +1,15 @@
+# Notification Service Application Configuration
+# Sends notifications based on events from other microservices
+
+# Server Configuration
 server:
-  port: 8084
+  port: 8084  # API endpoint port for the notification service
 
 spring:
   application:
-    name: notification-service
+    name: notification-service  # Service identifier
+  
+  # RabbitMQ Message Broker Configuration - listens for domain events
   rabbitmq:
     host: ${MQ_HOST:localhost}
     port: 5672
@@ -11,19 +17,20 @@ spring:
     password: guest
 
 
+# Actuator & Monitoring Configuration
 management:
   endpoints:
     web:
       exposure:
-        include: health,prometheus,metrics
+        include: health,prometheus,metrics  # Expose monitoring endpoints
   endpoint:
     health:
       show-details: always
     prometheus:
-      enabled: true
+      enabled: true  # Enable Prometheus metrics
   tracing:
     sampling:
-      probability: 1.0
+      probability: 1.0  # Trace 100% of requests
   zipkin:
     tracing:
       endpoint: ${ZIPKIN_ENDPOINT:http://localhost:9411/api/v2/spans}

@@ -1,9 +1,13 @@
+# Grafana Datasources Configuration
+# Automatically provisions Prometheus as a datasource for Grafana dashboards
+
 apiVersion: 1
 
+# Define all datasources to be provisioned
 datasources:
-  - name: Prometheus
-    type: prometheus
-    access: proxy
-    url: http://sh-prometheus:9090
-    isDefault: true
-    editable: true
+  - name: Prometheus  # Datasource name displayed in Grafana
+    type: prometheus  # Type of datasource
+    access: proxy  # Access mode for the datasource
+    url: http://sh-prometheus:9090  # URL to the Prometheus server
+    isDefault: true  # Make this the default datasource
+    editable: true  # Allow users to edit the datasource in Grafana UI

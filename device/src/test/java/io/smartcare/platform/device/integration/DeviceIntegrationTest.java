@@ -25,6 +25,11 @@ import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * Integration tests for the Device Service.
+ * Tests the complete flow of telemetry data reception, caching in Redis, and publishing to RabbitMQ.
+ * Uses Testcontainers for PostgreSQL, Redis, and RabbitMQ with a live application context.
+ */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
 class DeviceIntegrationTest {
@@ -62,6 +67,10 @@ class DeviceIntegrationTest {
         amqpAdmin.declareExchange(new TopicExchange("internal.exchange"));
     }
 
+    /**
+     * Tests that telemetry data is stored in Redis cache when posted to the endpoint.
+     * Verifies HTTP response is 200 OK and data persists in Redis.
+     */
     @Test
     void shouldStoreTelemetryInRedisAndReturnOk() {
         String sn = "SN-IT-999";

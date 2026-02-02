@@ -16,6 +16,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Unit tests for the Billing Controller.
+ * Tests HTTP endpoints for invoice retrieval and management.
+ * Uses MockMvc to test the REST API without starting the full application context.
+ */
 @WebMvcTest(BillingController.class)
 class BillingControllerTest {
 
@@ -25,6 +30,10 @@ class BillingControllerTest {
     @MockBean
     private InvoiceRepository invoiceRepository;
 
+    /**
+     * Tests that the GET /billing/invoices endpoint returns a list of invoices.
+     * Verifies that the response status is 200 OK and contains invoice data.
+     */
     @Test
     void getAllInvoices_ShouldReturnList() throws Exception {
         Invoice invoice = Invoice.builder()

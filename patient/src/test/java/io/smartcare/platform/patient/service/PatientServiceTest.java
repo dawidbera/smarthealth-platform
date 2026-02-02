@@ -17,6 +17,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * Unit tests for the Patient Service business logic.
+ * Tests patient registration including validation of unique national IDs and event publishing.
+ * Uses Mockito to mock the repository and RabbitMQ interactions.
+ */
 @ExtendWith(MockitoExtension.class)
 class PatientServiceTest {
 

@@ -1,24 +1,37 @@
-server:
-  port: 8083
+# Billing Service Application Configuration
+# This configuration file sets up the Billing Service for the SmartHealth Platform
 
+# Server Configuration
+server:
+  port: 8083  # API endpoint port for the billing service
+
+# Spring Boot Configuration
 spring:
   application:
-    name: billing-service
+    name: billing-service  # Service identifier used for logging and monitoring
+  
+  # Database (PostgreSQL) Configuration
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5434}/billing_db
     username: user
     password: password
     driver-class-name: org.postgresql.Driver
+  
+  # JPA/Hibernate ORM Configuration
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: true
-    open-in-view: false
+      ddl-auto: update  # Automatically create/update database schema
+    show-sql: true  # Log SQL queries to console
+    open-in-view: false  # Disable OpenSessionInView pattern
+  
+  # RabbitMQ Message Broker Configuration
   rabbitmq:
     host: ${MQ_HOST:localhost}
     port: 5672
     username: guest
     password: guest
+  
+  # AWS/Cloud Configuration (LocalStack in dev)
   cloud:
     aws:
       s3:
@@ -29,19 +42,24 @@ spring:
         access-key: test
         secret-key: test
 
+
+# Actuator & Monitoring Configuration
+# Exposes metrics, health checks, and tracing endpoints
 management:
   endpoints:
     web:
       exposure:
-        include: health,prometheus,metrics
+        include: health,prometheus,metrics  # Expose actuator endpoints
   endpoint:
     health:
-      show-details: always
+      show-details: always  # Always show detailed health info
     prometheus:
-      enabled: true
+      enabled: true  # Enable Prometheus metrics export
+  
+  # Distributed Tracing Configuration (Zipkin)
   tracing:
     sampling:
-      probability: 1.0
+      probability: 1.0  # Trace 100% of requests (1.0 = 100%)
   zipkin:
     tracing:
       endpoint: ${ZIPKIN_ENDPOINT:http://localhost:9411/api/v2/spans}

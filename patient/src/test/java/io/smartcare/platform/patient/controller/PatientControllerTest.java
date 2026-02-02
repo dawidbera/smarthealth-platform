@@ -18,6 +18,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+/**
+ * Unit tests for the Patient Controller.
+ * Tests CRUD operations and patient existence checks via REST endpoints.
+ * Uses MockMvc to test the API in isolation without loading the full application context.
+ */
 @WebMvcTest(PatientController.class)
 class PatientControllerTest {
 
@@ -30,6 +35,10 @@ class PatientControllerTest {
     @MockBean
     private PatientRepository patientRepository;
 
+    /**
+     * Tests that the GET /patient endpoint returns a list of all patients.
+     * Verifies that the response status is 200 OK and contains patient data.
+     */
     @Test
     void getAllPatients_ShouldReturnList() throws Exception {
         Patient patient = Patient.builder().id(1L).firstName("John").build();
@@ -40,6 +49,10 @@ class PatientControllerTest {
                 .andExpect(jsonPath("$[0].firstName").value("John"));
     }
 
+    /**
+     * Tests that the POST /patient endpoint successfully creates a new patient.
+     * Verifies that the response status is 201 Created and contains the created patient data.
+     */
     @Test
     void createPatient_ShouldReturnCreated() throws Exception {
         Patient patient = Patient.builder().id(1L).firstName("John").build();
@@ -54,6 +67,10 @@ class PatientControllerTest {
                 .andExpect(jsonPath("$.firstName").value("John"));
     }
 
+    /**
+     * Tests that the GET /patient/{id}/exists endpoint returns true when a patient exists.
+     * Verifies that the response is 200 OK with a boolean value indicating existence.
+     */
     @Test
     void exists_ShouldReturnTrue() throws Exception {
         when(patientRepository.existsById(1L)).thenReturn(true);

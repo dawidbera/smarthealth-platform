@@ -18,6 +18,11 @@ import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Unit tests for the Device Controller.
+ * Tests the REST endpoint for submitting telemetry data from health monitoring devices.
+ * Uses MockMvc to test the HTTP endpoint in isolation.
+ */
 @WebMvcTest(DeviceController.class)
 class DeviceControllerTest {
 
@@ -30,6 +35,10 @@ class DeviceControllerTest {
     @MockBean
     private RedisTemplate<String, Object> redisTemplate;
 
+    /**
+     * Tests that the POST /telemetry endpoint accepts telemetry data and returns 200 OK.
+     * Verifies that the device service processes the telemetry data without errors.
+     */
     @Test
     void postTelemetry_ShouldReturnAccepted() throws Exception {
         doNothing().when(deviceService).processTelemetry(any(TelemetryData.class));

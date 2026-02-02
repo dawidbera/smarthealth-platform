@@ -1,23 +1,35 @@
+# Device Service Application Configuration
+# Handles telemetry data collection from medical devices
+
+# Server Configuration
 server:
-  port: 8085
+  port: 8085  # API endpoint port for the device service
 
 spring:
   application:
-    name: device-service
+    name: device-service  # Service identifier
+  
+  # Database (PostgreSQL) Configuration
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5435}/device_db
     username: user
     password: password
     driver-class-name: org.postgresql.Driver
+  
+  # JPA/Hibernate ORM Configuration
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: update  # Auto-create/update schema
     show-sql: true
     open-in-view: false
+  
+  # Redis Cache Configuration - stores latest telemetry data
   data:
     redis:
       host: ${REDIS_HOST:localhost}
       port: 6379
+  
+  # RabbitMQ Message Broker Configuration - publishes telemetry events
   rabbitmq:
     host: ${MQ_HOST:localhost}
     port: 5672
@@ -25,6 +37,7 @@ spring:
     password: guest
 
 
+# Actuator & Monitoring Configuration
 management:
   endpoints:
     web:
@@ -37,7 +50,7 @@ management:
       enabled: true
   tracing:
     sampling:
-      probability: 1.0
+      probability: 1.0  # Trace 100% of requests
   zipkin:
     tracing:
       endpoint: ${ZIPKIN_ENDPOINT:http://localhost:9411/api/v2/spans}

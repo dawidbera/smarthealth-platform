@@ -1,62 +1,68 @@
-# --- Server Configuration ---
-server:
-  port: 8081
+# Patient Service Application Configuration
+# Manages patient registration and profile information
 
-# --- Spring Core Configuration ---
+# Server Configuration
+server:
+  port: 8081  # API endpoint port for the patient service
+
+# Spring Boot Configuration
 spring:
   application:
-    name: patient-service
+    name: patient-service  # Service identifier for logging and monitoring
+  
+  # Spring Cloud Configuration - AWS Parameter Store integration
   config:
     import: "optional:aws-parameterstore:/config/patient-service/"
   
-  # --- AWS Configuration (Parameter Store) ---
+  # AWS Cloud Configuration (LocalStack in dev environment)
   cloud:
     aws:
       parameterstore:
-        endpoint: ${AWS_ENDPOINT:http://localhost:4566}
+        endpoint: ${AWS_ENDPOINT:http://localhost:4566}  # AWS Parameter Store endpoint
         region: us-east-1
       credentials:
         access-key: test
         secret-key: test
 
-  # --- Database Configuration ---
+# Database (PostgreSQL) Configuration
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:5432/patient_db
     driver-class-name: org.postgresql.Driver
-    # Username and Password loaded from AWS Parameter Store
+    # Username and Password are loaded from AWS Parameter Store
   
-  # --- JPA/Hibernate Configuration ---
+  # JPA/Hibernate ORM Configuration
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: true
+      ddl-auto: update  # Auto-create/update database schema
+    show-sql: true  # Log SQL queries
     open-in-view: false
     properties:
       hibernate:
-        format_sql: true
+        format_sql: true  # Pretty-print SQL queries
 
-  # --- Message Broker Configuration ---
+  # RabbitMQ Message Broker Configuration
   rabbitmq:
     host: ${MQ_HOST:localhost}
     port: 5672
 
 
-# --- Actuator & Monitoring Configuration ---
+# Actuator & Monitoring Configuration
+# Exposes metrics, health checks, and tracing information
 management:
   endpoints:
     web:
       exposure:
-        include: health,prometheus,metrics
+        include: health,prometheus,metrics  # Enable standard actuator endpoints
   endpoint:
     health:
-      show-details: always
+      show-details: always  # Show detailed health information
     prometheus:
-      enabled: true
+      enabled: true  # Export Prometheus metrics
   
-  # --- Distributed Tracing (Zipkin) ---
+  # Distributed Tracing Configuration (Zipkin)
   tracing:
     sampling:
-      probability: 1.0
+      probability: 1.0  # Trace 100% of requests
   zipkin:
     tracing:
       endpoint: ${ZIPKIN_ENDPOINT:http://localhost:9411/api/v2/spans}

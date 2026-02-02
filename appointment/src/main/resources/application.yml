@@ -1,40 +1,44 @@
-# --- Server Configuration ---
-server:
-  port: 8082
+# Appointment Service Application Configuration
+# Manages appointment booking and scheduling
 
-# --- Spring Core Configuration ---
+# Server Configuration
+server:
+  port: 8082  # API endpoint port for the appointment service
+
+# Spring Boot Configuration
 spring:
   application:
-    name: appointment-service
+    name: appointment-service  # Service identifier
 
-  # --- Database Configuration ---
+  # Database (PostgreSQL) Configuration
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5433}/appointment_db
     username: user
     password: password
     driver-class-name: org.postgresql.Driver
 
-  # --- JPA/Hibernate Configuration ---
+  # JPA/Hibernate ORM Configuration
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: update  # Auto-create/update database schema
     show-sql: true
     open-in-view: false
 
-  # --- Message Broker Configuration ---
+  # RabbitMQ Message Broker Configuration
   rabbitmq:
     host: ${MQ_HOST:localhost}
     port: 5672
     username: guest
     password: guest
 
-# --- External Services ---
+# External Services Configuration
 services:
   patient-service:
-    url: ${PATIENT_SERVICE_URL:http://localhost:8081}
+    url: ${PATIENT_SERVICE_URL:http://localhost:8081}  # Patient service endpoint for synchronous calls
 
 
-# --- Actuator & Monitoring Configuration ---
+# Actuator & Monitoring Configuration
+# Exposes metrics, health checks, and tracing endpoints
 management:
   endpoints:
     web:
@@ -46,24 +50,25 @@ management:
     prometheus:
       enabled: true
   
-  # --- Distributed Tracing (Zipkin) ---
+  # Distributed Tracing Configuration (Zipkin)
   tracing:
     sampling:
-      probability: 1.0
+      probability: 1.0  # Trace 100% of requests
   zipkin:
     tracing:
       endpoint: ${ZIPKIN_ENDPOINT:http://localhost:9411/api/v2/spans}
 
-# --- Resilience4j Configuration (Circuit Breaker) ---
+# Resilience4j Configuration (Circuit Breaker)
+# Provides fault tolerance for synchronous calls to patient service
 resilience4j:
   circuitbreaker:
     instances:
       patientService:
         registerHealthIndicator: true
-        slidingWindowSize: 10
-        minimumNumberOfCalls: 5
-        permittedNumberOfCallsInHalfOpenState: 3
-        automaticTransitionFromOpenToHalfOpenEnabled: true
-        waitDurationInOpenState: 5s
-        failureRateThreshold: 50
+        slidingWindowSize: 10  # Number of calls to consider
+        minimumNumberOfCalls: 5  # Minimum calls before evaluating failure rate
+        permittedNumberOfCallsInHalfOpenState: 3  # Calls allowed in half-open state
+        automaticTransitionFromOpenToHalfOpenEnabled: true  # Auto-retry after wait
+        waitDurationInOpenState: 5s  # Wait before half-open state
+        failureRateThreshold: 50  # % failure rate to trigger circuit open
         eventConsumerBufferSize: 10

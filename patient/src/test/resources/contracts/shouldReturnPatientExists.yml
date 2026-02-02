@@ -1,9 +1,17 @@
+# Contract Test: Patient Service - Check Patient Existence
+# Tests that the GET /patient/{id}/exists endpoint returns the correct patient existence status
+
 description: "Check if patient exists by ID"
+
+# Expected HTTP Request
+# --- Spring Cloud Contract for Checking Patient Existence ---
 request:
   method: GET
   url: /patient/1/exists
+
+# Expected HTTP Response
 response:
-  status: 200
-  body: true
+  status: 200  # OK response
+  body: true   # Patient exists
   headers:
     Content-Type: application/json

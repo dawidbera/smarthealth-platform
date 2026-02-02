@@ -27,6 +27,11 @@ import java.time.LocalDateTime;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * Base class for Spring Cloud Contract Verifier tests in the Appointment Service.
+ * Sets up the environment for contract testing, including mocking external services
+ * and bridging RabbitMQ messages to Spring Integration channels.
+ */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @AutoConfigureMessageVerifier
 @DirtiesContext
@@ -53,6 +58,9 @@ public abstract class ContractVerifierBase {
     @Qualifier("internal.exchange")
     private MessageChannel internalExchange;
 
+    /**
+     * Test configuration to provide a message channel for internal exchange.
+     */
     @TestConfiguration
     public static class TestConfig {
         @Bean("internal.exchange")
@@ -61,6 +69,9 @@ public abstract class ContractVerifierBase {
         }
     }
 
+    /**
+     * Sets up mocks and message bridging before each test.
+     */
     @BeforeEach
     public void setup() {
         WebClient webClient = mock(WebClient.class);
@@ -86,6 +97,9 @@ public abstract class ContractVerifierBase {
         }).when(rabbitTemplate).convertAndSend(eq("internal.exchange"), anyString(), anyString());
     }
 
+    /**
+     * Triggers a book appointment event for contract verification.
+     */
     public void triggerBookedEvent() {
         Appointment appointment = Appointment.builder()
                 .patientId(1L)

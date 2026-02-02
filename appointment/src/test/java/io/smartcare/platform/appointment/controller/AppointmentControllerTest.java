@@ -21,6 +21,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Unit tests for the Appointment Controller.
+ * Tests CRUD operations and appointment booking via REST endpoints.
+ * Uses MockMvc to test the API without loading the full application context.
+ */
 @WebMvcTest(AppointmentController.class)
 class AppointmentControllerTest {
 
@@ -33,6 +38,10 @@ class AppointmentControllerTest {
     @MockBean
     private AppointmentRepository appointmentRepository;
 
+    /**
+     * Tests that the GET /appointment endpoint returns a list of all appointments.
+     * Verifies that the response status is 200 OK and contains appointment data.
+     */
     @Test
     void getAllAppointments_ShouldReturnList() throws Exception {
         Appointment app = Appointment.builder().id(1L).patientId(1L).doctorId(101L).build();
@@ -43,6 +52,10 @@ class AppointmentControllerTest {
                 .andExpect(jsonPath("$[0].doctorId").value(101));
     }
 
+    /**
+     * Tests that the POST /appointment endpoint successfully books a new appointment.
+     * Verifies that the response status is 201 Created and contains the booked appointment status.
+     */
     @Test
     void bookAppointment_ShouldReturnCreated() throws Exception {
         Appointment app = Appointment.builder()

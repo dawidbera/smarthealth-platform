@@ -1,11 +1,15 @@
+# Grafana Dashboard Provider Configuration
+# Automatically discovers and provisions dashboards from the specified folder
+
 apiVersion: 1
 
+# Define dashboard providers
 providers:
-  - name: 'Default'
-    orgId: 1
-    folder: ''
-    type: file
-    disableDeletion: false
-    updateIntervalSeconds: 10
+  - name: 'Default'  # Name of the provider
+    orgId: 1  # Organization ID in Grafana
+    folder: ''  # Folder where dashboards will be stored
+    type: file  # Type of provider (file = load from filesystem)
+    disableDeletion: false  # Allow deleting provisioned dashboards
+    updateIntervalSeconds: 10  # How often to check for dashboard changes
     options:
-      path: /etc/grafana/provisioning/dashboards
+      path: /etc/grafana/provisioning/dashboards  # Path to dashboard files

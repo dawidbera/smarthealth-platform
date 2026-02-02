@@ -1,30 +1,41 @@
+# Prometheus Configuration
+# Defines global scraping settings and monitoring targets for the SmartHealth Platform
+
 # --- Global Prometheus Configuration ---
 global:
-  scrape_interval: 15s # How often to scrape targets
+  scrape_interval: 15s  # How often to scrape targets (default: 15s)
 
 # --- Scrape Configurations for Microservices ---
+# Configures Prometheus to collect metrics from all microservices
 scrape_configs:
-  - job_name: 'smarthealth-services'
-    metrics_path: '/actuator/prometheus' # Spring Boot Actuator endpoint
+  - job_name: 'smarthealth-services'  # Name of the scrape job
+    metrics_path: '/actuator/prometheus'  # Spring Boot Actuator endpoint for metrics
     static_configs:
+      # API Gateway
       - targets: ['sh-gateway:8080']
         labels:
           application: 'api-gateway'
+      # Patient Service
       - targets: ['sh-patient:8081']
         labels:
           application: 'patient-service'
+      # Appointment Service
       - targets: ['sh-appointment:8082']
         labels:
           application: 'appointment-service'
+      # Billing Service
       - targets: ['sh-billing:8083']
         labels:
           application: 'billing-service'
+      # Notification Service
       - targets: ['sh-notification:8084']
         labels:
           application: 'notification-service'
+      # Device Service
       - targets: ['sh-device:8085']
         labels:
           application: 'device-service'
+      # Analytics Service
       - targets: ['sh-analytics:8086']
         labels:
           application: 'analytics-service'
