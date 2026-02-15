@@ -16,10 +16,16 @@ jobs:
     name: Backend (Java 21)
     runs-on: ubuntu-latest
     env:
-      TESTCONTAINERS_RYUK_DISABLED: "true" # Disable Ryuk to avoid permission issues on CI
+      TESTCONTAINERS_RYUK_DISABLED: "true"
+      TESTCONTAINERS_CHECKS_DISABLE: "true"
+      DOCKER_API_VERSION: "1.44"
     steps:
       # Check out the repository code
       - uses: actions/checkout@v4
+      
+      # Fix Testcontainers Docker API version explicitly
+      - name: Configure Testcontainers
+        run: echo "docker.client.strategy=org.testcontainers.dockerclient.UnixSocketClientProviderStrategy" > ~/.testcontainers.properties
       
       # Set up Java 21 development environment
       - name: Set up JDK 21
