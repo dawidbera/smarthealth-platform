@@ -52,6 +52,11 @@ Key Queues:
 ## Security (OIDC)
 Keycloak automatically imports the `smarthealth` realm from `infra/keycloak/realm-export.json` on startup.
 
+The **API Gateway** acts as an OAuth2 Resource Server, validating JWT tokens against Keycloak.
+- **Public Access**: `GET` requests to business services are allowed for dashboard visualization.
+- **Protected Access**: All `POST`, `PUT`, and `DELETE` operations require a valid JWT bearer token.
+- **Service Security**: Internal services currently trust the Gateway's authentication; Zero-Trust service-to-service security is planned for future iterations.
+
 ## Testing & Simulation
 - **Telemetry Simulator**: Use `./infra/simulator.sh` to send mock data to the `device-service` via the API Gateway. This is required to populate Redis and see data on the Dashboard.
 - **Test Infrastructure**:

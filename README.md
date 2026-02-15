@@ -1,17 +1,20 @@
 # SmartHealth Platform — Event‑Driven Microservices
 
 ## Architecture Overview
-The platform consists of 7 microservices communicating via asynchronous events (RabbitMQ) and synchronous REST calls (WebClient with **Resilience4j**). Cloud capabilities (S3, SSM) are simulated locally using **LocalStack**. Security is handled by Keycloak (OIDC). Monitoring is provided by Prometheus and Grafana.
+The platform consists of 7 microservices communicating via asynchronous events (RabbitMQ) and synchronous REST calls (WebClient with **Resilience4j**). Security is enforced by the **API Gateway** acting as an OAuth2 Resource Server, validating tokens with **Keycloak**.
 
 ```mermaid
 flowchart TD
-  User[User / Client] --> GW[API Gateway :8080]
-  GW --> KC[(Keycloak :8180)]
-  GW --> PAT[Patient Service]
-  GW --> APP[Appointment Service]
-  GW --> DEV[Device Service]
-  GW --> BILL[Billing Service]
-  GW --> ANL[Analytics Service]
+  User[User / Client] -->|1. Request with JWT| GW[API Gateway :8080]
+  GW -.->|2. Validate Token| KC[(Keycloak :8180)]
+  
+  subgraph Protected Services
+    GW --> PAT[Patient Service]
+    GW --> APP[Appointment Service]
+    GW --> DEV[Device Service]
+    GW --> BILL[Billing Service]
+    GW --> ANL[Analytics Service]
+  end
   
   APP -- Sync (Circuit Breaker) --> PAT
   DEV -- Cache --> R[(Redis)]
@@ -25,10 +28,6 @@ flowchart TD
   MQ --> BILL
   MQ --> ANL
   MQ --> NOTIF[Notification Service]
-  
-  PAT & APP & BILL & DEV & ANL & GW --> PROM[(Prometheus)]
-  PAT & APP & BILL & DEV & ANL & GW --> ZIP[(Zipkin)]
-  PROM --> GRAF[Grafana]
 ```
 
 ## Screenshots
@@ -69,7 +68,7 @@ docker compose up --build -d
 * **Observability**: Prometheus, Grafana, Zipkin
 
 ### 3. Access
-* **Frontend UI**: http://localhost:4200 (Demo Mode: No login required)
+* **Frontend UI**: http://localhost:4200 (Read-only access, login required for booking/registration)
 * **Grafana**: http://localhost:3000 (Admin: admin/admin)
 * **Zipkin**: http://localhost:9411 (Distributed Tracing)
 * **Prometheus**: http://localhost:9090
@@ -91,7 +90,7 @@ To simulate live health data and observe the anomaly detection system:
 
 ## Infrastructure Details
 * **Observability**: Each service exports metrics to Prometheus and traces to Zipkin. Grafana is pre-configured with JVM dashboards via provisioning.
-* **Security (Demo Mode)**: Currently, the platform operates with open access for easier testing. OIDC/Keycloak is available in the infrastructure but redirection is disabled in this branch.
+* **Security**: The platform enforces **OAuth2/JWT** authentication via the API Gateway for all state-changing operations (POST, PUT, DELETE). Public access is restricted to read-only (GET) operations for the dashboard.
 * **Memory Management**: Services are limited to **256MB-512MB RAM** to ensure stability on developer machines.
 
 ## Services & Ports
