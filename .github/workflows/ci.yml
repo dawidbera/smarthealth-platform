@@ -16,7 +16,7 @@ jobs:
     name: Backend (Java 21)
     runs-on: ubuntu-latest
     env:
-      DOCKER_API_VERSION: "1.44"
+      TESTCONTAINERS_RYUK_DISABLED: "true" # Disable Ryuk to avoid permission issues on CI
     steps:
       # Check out the repository code
       - uses: actions/checkout@v4
